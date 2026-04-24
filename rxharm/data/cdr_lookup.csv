@@ -1,0 +1,41 @@
+# Crude Death Rate (CDR) lookup table for Project RxHARM
+# Source: Global Burden of Disease (GBD) Study 2021, IHME
+# CDR units: deaths per person per year (e.g., 0.00720 = 7.20 deaths per 1000 population)
+# NOTE: These are national estimates. Sub-national estimates should be used where
+#       available (e.g., state or district-level vital registration data), as
+#       intra-national CDR variation can be substantial (up to 2x in large countries).
+# Coverage: 33 countries across all world regions and income groups
+country_iso3,country_name,region,income_group,cdr_per_person_per_year,source,year
+IND,India,South Asia,Lower-middle income,0.00720,GBD 2021 IHME,2021
+BGD,Bangladesh,South Asia,Lower-middle income,0.00528,GBD 2021 IHME,2021
+PAK,Pakistan,South Asia,Lower-middle income,0.00670,GBD 2021 IHME,2021
+NPL,Nepal,South Asia,Lower-middle income,0.00610,GBD 2021 IHME,2021
+LKA,Sri Lanka,South Asia,Lower-middle income,0.00680,GBD 2021 IHME,2021
+IDN,Indonesia,East Asia & Pacific,Lower-middle income,0.00650,GBD 2021 IHME,2021
+PHL,Philippines,East Asia & Pacific,Lower-middle income,0.00640,GBD 2021 IHME,2021
+VNM,Vietnam,East Asia & Pacific,Lower-middle income,0.00660,GBD 2021 IHME,2021
+THA,Thailand,East Asia & Pacific,Upper-middle income,0.00740,GBD 2021 IHME,2021
+CHN,China,East Asia & Pacific,Upper-middle income,0.00710,GBD 2021 IHME,2021
+JPN,Japan,East Asia & Pacific,High income,0.01200,GBD 2021 IHME,2021
+KOR,South Korea,East Asia & Pacific,High income,0.00590,GBD 2021 IHME,2021
+AUS,Australia,East Asia & Pacific,High income,0.00650,GBD 2021 IHME,2021
+ETH,Ethiopia,Sub-Saharan Africa,Low income,0.00640,GBD 2021 IHME,2021
+NGA,Nigeria,Sub-Saharan Africa,Lower-middle income,0.01000,GBD 2021 IHME,2021
+KEN,Kenya,Sub-Saharan Africa,Lower-middle income,0.00530,GBD 2021 IHME,2021
+GHA,Ghana,Sub-Saharan Africa,Lower-middle income,0.00740,GBD 2021 IHME,2021
+ZAF,South Africa,Sub-Saharan Africa,Upper-middle income,0.00900,GBD 2021 IHME,2021
+MOZ,Mozambique,Sub-Saharan Africa,Low income,0.00860,GBD 2021 IHME,2021
+TZA,Tanzania,Sub-Saharan Africa,Low income,0.00590,GBD 2021 IHME,2021
+EGY,Egypt,Middle East & North Africa,Lower-middle income,0.00570,GBD 2021 IHME,2021
+IRN,Iran,Middle East & North Africa,Upper-middle income,0.00530,GBD 2021 IHME,2021
+IRQ,Iraq,Middle East & North Africa,Upper-middle income,0.00490,GBD 2021 IHME,2021
+SAU,Saudi Arabia,Middle East & North Africa,High income,0.00360,GBD 2021 IHME,2021
+BRA,Brazil,Latin America & Caribbean,Upper-middle income,0.00640,GBD 2021 IHME,2021
+MEX,Mexico,Latin America & Caribbean,Upper-middle income,0.00610,GBD 2021 IHME,2021
+COL,Colombia,Latin America & Caribbean,Upper-middle income,0.00550,GBD 2021 IHME,2021
+ARG,Argentina,Latin America & Caribbean,Upper-middle income,0.00780,GBD 2021 IHME,2021
+USA,United States,North America,High income,0.00880,GBD 2021 IHME,2021
+GBR,United Kingdom,Europe & Central Asia,High income,0.00920,GBD 2021 IHME,2021
+DEU,Germany,Europe & Central Asia,High income,0.01100,GBD 2021 IHME,2021
+FRA,France,Europe & Central Asia,High income,0.00890,GBD 2021 IHME,2021
+RUS,Russia,Europe & Central Asia,Upper-middle income,0.01350,GBD 2021 IHME,2021

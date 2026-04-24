@@ -1,0 +1,6 @@
+climate_zone,koppen_description,beta_per_degC,source,n_locations
+A,Tropical,0.0072,Gasparrini et al. 2017 Lancet Planetary Health,89
+B,Arid semi-arid,0.0058,Gasparrini et al. 2017 Lancet Planetary Health,47
+C,Temperate,0.0041,Gasparrini et al. 2017 Lancet Planetary Health,198
+D,Continental,0.0033,Gasparrini et al. 2017 Lancet Planetary Health,112
+E,Polar,0.0025,Gasparrini et al. 2017 Lancet Planetary Health,8

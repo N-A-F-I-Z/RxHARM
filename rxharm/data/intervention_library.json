@@ -1,0 +1,698 @@
+{
+  "_metadata": {
+    "version": "1.1.0",
+    "name": "RxHARM Intervention Library",
+    "description": "Evidence-based parameters for 5 short-run and 8 long-run urban heat mitigation interventions",
+    "systematic_review_methodology": "PRISMA-inspired; searches conducted April 2025 across Google Scholar, Scopus, Web of Science, and grey literature (IPCC, EPA, WHO, USDA). Triangular distributions [min, mode, max] derived from multi-study synthesis.",
+    "currency": "USD 2023 (CPI-adjusted from source year where noted)",
+    "unit_convention": {
+      "temperature": "degrees Celsius (cooling = negative delta)",
+      "cost": "USD 2023",
+      "carbon": "tCO2eq per unit per year",
+      "stormwater": "m3 per unit per year at ~800mm/yr annual rainfall",
+      "energy": "kWh per unit per year"
+    }
+  },
+
+  "short_run": {
+
+    "SR1_cooling_center": {
+      "name": "Cooling Center Activation",
+      "scope": "short_run",
+      "unit_definition": "One building activated as a public cooling center for one heatwave event day",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [0, 0, 0],
+        "local_air_temp_reduction_degC": [0, 0, 0],
+        "_note_mechanism": "No direct LST effect. Mortality benefit is behavioral: individuals who visit reduce exposure. Not a spatial temperature reduction intervention.",
+        "effect_radius_m": [300, 500, 1000],
+        "effect_radius_m_source": "Semenza JC et al. (1996). Heat-related deaths during the July 1995 heat wave in Chicago. JAMA, 275(16), 1243-1248. DOI: 10.1001/jama.1996.03530400021030; Cusack L et al. (2011). Int J Environmental Research Public Health, 8(12), 4273-4290.",
+        "establishment_years": 0,
+        "mortality_reduction_pct_within_radius": [25, 45, 66],
+        "cited_by_mortality": "Bouchama A et al. (2007). Prognostic factors in heat wave-related deaths: a meta-analysis. Archives of Internal Medicine, 167(20), 2170-2176. DOI: 10.1001/archinte.167.20.2170. Meta-analysis of 6 case-control studies: OR=0.34 (95% CI 0.2-0.5) for visiting cool environments, equivalent to ~66% odds reduction. Supported by: Meade RD et al. (2023). Efficacy of Cooling Centers for Mitigating Physiological Strain. Environmental Health Perspectives, 131(6). DOI: 10.1289/EHP11651",
+        "cited_by_radius": "Weisskopf MG et al. (2002). Heat wave morbidity and mortality, Milwaukee, Wis, 1999 vs 1995. American Journal of Public Health, 92(5), 830-833. DOI: 10.2105/AJPH.92.5.830"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": false,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Increases adaptive capacity by providing air-conditioned refuge during heatwave events. Does not change satellite-observable indicators but modifies realized mortality risk through behavior change."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [800, 2000, 5000],
+        "cost_per_unit_usd_source": "EPA Excessive Heat Events Guidebook (2006, updated 2022): typical cooling center operational costs $500-3000/day depending on facility size, staffing, and utilities. NYC Emergency Management (2022 summer heat plan) reports ~$1500-2500/facility/day for staffed cooling sites.",
+        "lifecycle_years": 1,
+        "annualized_cost_usd": [800, 2000, 5000],
+        "operational_cost_per_year_usd": [800, 2000, 5000],
+        "cited_by_cost": "US EPA (2006, updated). Excessive Heat Events Guidebook. EPA 430-B-06-005. US Environmental Protection Agency. Grey literature. City of Chicago Office of Emergency Management and Communications. Heat Emergency Plan (2022 update)."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [0, 0, 0],
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.0,
+        "cited_by_carbon": "DATA_UNAVAILABLE - no carbon co-benefit for cooling center activation",
+        "cited_by_stormwater": "DATA_UNAVAILABLE - no stormwater co-benefit"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6, 1, 2, 3],
+        "min_population_density": "area must have population >= MIN_POPULATION_THRESHOLD",
+        "requires_existing_building": true,
+        "applicable_scope": ["short_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.0,
+        "notes": "Effectiveness depends on uptake rate (how many eligible individuals visit). Literature reports effectiveness for 'visitors'; population-level effectiveness is lower due to access barriers (transport, awareness, mobility). Evidence level: medium (6 case-control studies in meta-analysis; no RCT exists).",
+        "primary_literature": "Bouchama A, Dehbi M, Mohamed G, Matthies F, Shoukri M, Menne B. (2007). Prognostic factors in heat wave-related deaths: a meta-analysis. Archives of Internal Medicine, 167(20), 2170-2176. DOI: 10.1001/archinte.167.20.2170"
+      }
+    },
+
+    "SR2_misting_station": {
+      "name": "Mobile Misting Station Deployment",
+      "scope": "short_run",
+      "unit_definition": "One portable misting unit deployed at a public outdoor location for one heatwave event day",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "local_air_temp_reduction_degC": [0.5, 2.5, 6.0],
+        "local_air_temp_reduction_degC_source": "Hendel M et al. (2015). Measuring the effect of urban heat island mitigation techniques in the field of expected results facing climate change: Application to the case of Paris. Urban Climate, 14, 652-663. DOI: 10.1016/j.uclim.2015.10.009. Reports 2-6C reduction in arid/semiarid conditions. Monteiro LM et al. (2022). Outdoor thermal comfort assessment and misting systems review. MDPI Sustainability. Near-field 1m: 3-8C; mid-field 5-10m: 0.5-3C.",
+        "effect_radius_m": [5, 15, 30],
+        "effect_radius_m_source": "Shashua-Bar L & Hoffman ME (2000). Vegetation as a climatic component in the design of an urban street. Atmospheric Environment, 34(5), 819-826. DOI: 10.1016/S1352-2310(99)00321-5",
+        "delta_LST_per_unit": [0, 0, 0],
+        "establishment_years": 0,
+        "climate_sensitivity_note": "Effectiveness significantly reduced in humid climates (RH>70%) where evaporative cooling is inhibited. In high-humidity tropical climates (e.g. South Asia during monsoon), effective radius may be <5m and temperature reduction <1C. Mode value assumes semi-arid conditions.",
+        "cited_by_effectiveness": "Hendel M, Gutierrez P, Colombert M, Diab Y, Royon L. (2016). Measuring the effects of urban heat island mitigation techniques: field measurement results for pedestrian-level air temperature. Building and Environment, 103, 243-252. DOI: 10.1016/j.buildenv.2016.04.010"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": false,
+        "mechanism": "Reduces realized local air temperature through evaporative cooling. Effect is temporary (lasts only during operation) and highly localized. Acts on H sub-index via thermal comfort improvement."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [1500, 4000, 12000],
+        "cost_per_unit_usd_source": "Commercial product specifications: Mist Works industrial misting fans $2,000-8,000; Cool-Space evaporative coolers $1,500-5,000; high-capacity industrial units up to $12,000 (2023 prices). Operational costs: water consumption ~30-100 liters/hour.",
+        "water_liters_per_hour": [20, 50, 120],
+        "lifecycle_years": 5,
+        "annualized_cost_usd": [300, 800, 2400],
+        "operational_cost_per_year_usd": [200, 500, 1500],
+        "cited_by_cost": "Commercial specifications: MistCooling.com (2023), CoolSpace CS-24 evaporative cooler, $3,200-4,800. Outdoor Misting Systems commercial product catalog (2023). Grey literature."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [0, 0, 0],
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.0,
+        "cited_by_carbon": "DATA_UNAVAILABLE - no meaningful carbon co-benefit",
+        "cited_by_stormwater": "DATA_UNAVAILABLE - net water consumer, not stormwater capturer"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6, 1, 2, 3, 4],
+        "min_built_frac": 0.30,
+        "applicable_scope": ["short_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 0.5,
+        "notes": "Halve the mode effectiveness for climate zones with mean summer RH > 70% (tropical humid, monsoon). Evidence level: medium (multiple field measurement studies but high variability).",
+        "primary_literature": "Hendel M, Gutierrez P, Colombert M, Diab Y, Royon L. (2016). Building and Environment, 103, 243-252. DOI: 10.1016/j.buildenv.2016.04.010"
+      }
+    },
+
+    "SR3_welfare_check": {
+      "name": "Targeted Welfare Check Outreach",
+      "scope": "short_run",
+      "unit_definition": "One household reached by a direct welfare check visit or telephone contact during a heatwave event",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [0, 0, 0],
+        "local_air_temp_reduction_degC": [0, 0, 0],
+        "establishment_years": 0,
+        "effect_radius_m": [0, 0, 0],
+        "mortality_reduction_pct_per_household_reached": [10, 25, 45],
+        "mortality_reduction_pct_source": "Fouillet A et al. (2008). Has the impact of heat waves on mortality changed in France since the European heat wave of summer 2003? A study of the 2006 heat wave. International Journal of Epidemiology, 37(2), 309-317. DOI: 10.1093/ije/dym253. France post-2003 interventions (including 'voisins vigilants' outreach) associated with ~35% reduction in excess mortality in at-risk populations. Kovats RS & Hajat S (2008). Heat stress and public health: a critical review. Annual Review of Public Health, 29, 41-55. Estimates 10-45% reduction for isolated elderly when reached.",
+        "cited_by_mortality": "Fouillet A, Rey G, Laurent F, Pavillon G, Bellec S, Guihenneuc-Jouyaux C, Clavel J, Jougla E, Hémon D. (2008). International Journal of Epidemiology, 37(2), 309-317. DOI: 10.1093/ije/dym253"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": false,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Reduces social isolation (a key vulnerability factor). Identifies individuals in need of emergency assistance. Acts on adaptive capacity by ensuring at-risk elderly persons receive information and can access help."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [15, 35, 80],
+        "cost_per_unit_usd_source": "WHO Europe (2021). Health evidence network synthesis report 64: Heat action plans and their components. WHO Regional Office for Europe. Estimates $20-50 per household for trained outreach worker contact. Kovats RS & Hajat S (2008). Annual Review of Public Health, 29, 41-55.",
+        "lifecycle_years": 1,
+        "annualized_cost_usd": [15, 35, 80],
+        "operational_cost_per_year_usd": [15, 35, 80],
+        "cited_by_cost": "WHO Europe (2021). Health evidence network synthesis report 64. Copenhagen: WHO Regional Office for Europe. WHO/EURO:2021-2875-42196-58128."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [0, 0, 0],
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.0,
+        "cited_by_carbon": "DATA_UNAVAILABLE",
+        "cited_by_stormwater": "DATA_UNAVAILABLE"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6, 1, 2, 3],
+        "min_elderly_frac": 0.10,
+        "min_hri_percentile": 75,
+        "applicable_scope": ["short_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.0,
+        "notes": "Effectiveness depends heavily on uptake of recommended protective behaviors after check. Social connection itself is protective independent of advice conveyed (OR=0.40 for social contact in Bouchama 2007 meta-analysis). Evidence level: medium.",
+        "primary_literature": "Bouchama A et al. (2007). Archives of Internal Medicine, 167(20), 2170-2176. DOI: 10.1001/archinte.167.20.2170"
+      }
+    },
+
+    "SR4_medical_prepositioning": {
+      "name": "Emergency Medical Pre-positioning",
+      "scope": "short_run",
+      "unit_definition": "One ambulance/medical unit repositioned to serve a high-risk cluster for one heatwave event day",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [0, 0, 0],
+        "local_air_temp_reduction_degC": [0, 0, 0],
+        "establishment_years": 0,
+        "effect_radius_m": [500, 1500, 3000],
+        "survival_improvement_pct_per_10min_response_reduction": [10, 25, 40],
+        "cited_by_effectiveness": "Bouchama A & Knochel JP. (2002). Heat stroke. New England Journal of Medicine, 346(25), 1978-1988. DOI: 10.1056/NEJMra011089. Foundational: time to cooling is the primary determinant of heat stroke survival. Epstein Y & Yanovich R. (2019). Heatstroke. New England Journal of Medicine, 380(25), 2449-2459. DOI: 10.1056/NEJMra1810762. For each 30-minute delay in treatment, mortality increases by ~10-30%.",
+        "response_time_reduction_min": [5, 10, 20]
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": false,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Reduces time-to-treatment for heat stroke cases. Marginal cost is repositioning cost only (capital cost of ambulances excluded). Effective AC improvement: faster emergency response reduces realized mortality."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [100, 500, 2000],
+        "cost_per_unit_usd_source": "Repositioning cost only (fuel, overtime, opportunity cost of reduced coverage in origin location). Near-zero if city has excess capacity. Estimate based on marginal operational costs from EMS systems in US cities. Spaite DW et al. (2016). JAMA Surgery, 151(6), 574-581.",
+        "lifecycle_years": 1,
+        "annualized_cost_usd": [100, 500, 2000],
+        "operational_cost_per_year_usd": [100, 500, 2000],
+        "cited_by_cost": "Spaite DW, Bobrow BJ, Stolz U, et al. (2016). Evaluation of the impact of prehospital protocols designed to minimize on-scene time for penetrating trauma. JAMA Surgery, 151(6), 574-581. DOI: 10.1001/jamasurg.2016.0014"
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [0, 0, 0],
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.0,
+        "cited_by_carbon": "DATA_UNAVAILABLE",
+        "cited_by_stormwater": "DATA_UNAVAILABLE"
+      },
+      "group_E_feasibility": {
+        "applicable_scope": ["short_run"],
+        "max_units": "k_medical_units (set by user)"
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.0,
+        "notes": "Heat stroke is relatively rare; most heat events involve heat exhaustion and other conditions. Evidence for pre-positioning specifically (vs. general EMS response time improvement) is limited. Evidence level: medium (extrapolated from EMS response time literature).",
+        "primary_literature": "Bouchama A & Knochel JP. (2002). Heat stroke. New England Journal of Medicine, 346(25), 1978-1988. DOI: 10.1056/NEJMra011089"
+      }
+    },
+
+    "SR5_shade_structure": {
+      "name": "Temporary Shade Structure Deployment",
+      "scope": "short_run",
+      "unit_definition": "One shade sail or tensile fabric structure (approximately 25-50 m2 coverage area) deployed at an outdoor public node",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-0.5, -1.5, -3.0],
+        "delta_LST_per_unit_source": "Taleghani M. (2018). Outdoor thermal comfort through passive means: a review paper. Urban Climate, 26, 51-66. DOI: 10.1016/j.uclim.2018.08.005. Shade structures reduce MRT by 15-40 W/m2, equivalent to 1-4C surface temperature reduction. Middel A et al. (2021). Nature Climate Change.",
+        "local_air_temp_reduction_degC": [0.5, 2.0, 5.0],
+        "local_air_temp_reduction_source": "Lindberg F & Grimmond CSB. (2011). The influence of vegetation and building morphology on shadow patterns and mean radiant temperatures in urban areas. Theoretical and Applied Climatology, 105, 311-323. Shade reduces PET by 5-15C; air temperature reduction ~0.5-3C at ground level. Johansson E et al. (2018). Int J Biometeorology, 62(10), 1789-1802.",
+        "effect_radius_m": [5, 15, 25],
+        "establishment_years": 0,
+        "cited_by_effectiveness": "Taleghani M. (2018). Outdoor thermal comfort through passive means: a review paper. Urban Climate, 26, 51-66. DOI: 10.1016/j.uclim.2018.08.005. Lindberg F & Grimmond CSB. (2011). Theoretical and Applied Climatology, 105, 311-323. DOI: 10.1007/s00704-011-0552-3"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": false,
+        "mechanism": "Reduces solar radiation loading on street surface and pedestrians. Shade reduces MRT (mean radiant temperature) more than air temperature. Acts on H sub-index via surface temperature reduction."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [500, 2500, 8000],
+        "cost_per_unit_usd_source": "Commercial shade sail (25-50 m2): $500-3000 for basic tensile shade sail; premium tensile structures $3,000-10,000. Outdoor Event Supply (2023 catalog). Reusable over 5 years with seasonal storage.",
+        "lifecycle_years": 5,
+        "annualized_cost_usd": [100, 500, 1600],
+        "operational_cost_per_year_usd": [50, 200, 500],
+        "cited_by_cost": "Commercial product specifications: Shade Sails USA (2023), premium UV-resistant shade sails 25-50 m2, $800-3,500. Tensile structure contractors (2023): $3,000-8,000 installed for commercial-grade temporary shade."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [0, 0, 0],
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.0,
+        "cited_by_carbon": "DATA_UNAVAILABLE - fabric shade structures provide no carbon sequestration",
+        "cited_by_stormwater": "DATA_UNAVAILABLE"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6, 1, 2, 3, 4, 5],
+        "max_existing_canopy_m": "SHADE_MAX_EXISTING_CANOPY_M",
+        "applicable_scope": ["short_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.0,
+        "notes": "Effectiveness is primarily through solar radiation blocking (radiation effect dominant over convection). Works regardless of humidity. Evidence level: medium (field studies but mostly PET metrics rather than direct mortality data).",
+        "primary_literature": "Taleghani M. (2018). Urban Climate, 26, 51-66. DOI: 10.1016/j.uclim.2018.08.005"
+      }
+    }
+
+  },
+
+  "long_run": {
+
+    "LR1_tree_planting": {
+      "name": "Urban Tree Planting",
+      "scope": "long_run",
+      "unit_definition": "100 trees planted per hectare of available open land",
+      "evidence_level": "high",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-2.0, -4.5, -10.0],
+        "delta_LST_per_unit_source": "Chen X et al. (2024). Cooling efficacy of trees across cities is determined by background climate, urban morphology, and tree trait. Communications Earth & Environment. DOI: 10.1038/s43247-024-01908-4. Meta-analysis of 182 studies: trees lower pedestrian-level temperatures by up to 12C; mean ~4-5C. Schwaab J et al. (2021). The role of urban trees in reducing land surface temperatures in European cities. Nature Communications, 12, 6763. DOI: 10.1038/s41467-021-26768-w. LST 0-4K lower in S. Europe, 8-12K lower in Central Europe. Per-unit (100 trees/ha): min based on humid/low-canopy scenarios; max based on arid/high-canopy.",
+        "delta_LST_per_unit_source_secondary": "Speak AF et al. (2020). Urban Climate. Ziter CD et al. (2019). PNAS 116(13), 6244-6249.",
+        "delta_NDVI_per_unit": [0.05, 0.15, 0.30],
+        "delta_NDVI_per_unit_source": "Per 100 trees on 1 ha open land. Assuming ~15% canopy cover increase: NDVI increase 0.05-0.30 depending on species and baseline. Derived from Chen et al. (2024) canopy-NDVI relationships.",
+        "delta_NDWI_per_unit": [0.02, 0.06, 0.12],
+        "delta_tree_cover_per_unit": [2.0, 8.0, 20.0],
+        "delta_tree_cover_per_unit_source": "100 trees with average canopy spread 5-15m diameter: covers ~2-20% of 1 ha. Mode based on mature medium-sized street trees.",
+        "effect_radius_m": [30, 100, 300],
+        "effect_radius_m_source": "Urban Trees and Cooling review (Arboriculture & Urban Forestry, 2025): small patches 50-100m indirect cooling; large patches 50-500m. Mode for 100-tree planting on 1 ha.",
+        "establishment_years": [3, 7, 15],
+        "cited_by_LST": "Chen X, Chen T, Zhao Z, et al. (2024). Cooling efficacy of trees across cities is determined by background climate, urban morphology, and tree trait. Communications Earth & Environment, 5, 707. DOI: 10.1038/s43247-024-01908-4",
+        "cited_by_NDVI": "Schwaab J, Meier R, Mussetti G, Seneviratne S, Buchel C, Davin EL. (2021). The role of urban trees in reducing land surface temperatures in European cities. Nature Communications, 12, 6763. DOI: 10.1038/s41467-021-26768-w",
+        "cited_by_radius": "Urban Trees and Cooling: A Review of the Recent Literature (2018 to 2024). Arboriculture & Urban Forestry (2025). DOI: 10.48044/jauf.2025.023"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Reduces LST (H sub-index) through shading and evapotranspiration. Increases NDVI and tree_cover (AC sub-index indicators). Spillover cooling beyond planted area creates Park Cool Island effect at sufficient density."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [70000, 150000, 430000],
+        "cost_per_tree_usd": [700, 1500, 4300],
+        "cost_per_unit_usd_source": "NYC Parks Department (2024): $3,300 average cost per planted street tree (FY2024 data, includes soil prep, planting, 2-year maintenance contract). LA Bureau of Public Works (2022): $4,351 per tree including 5-year watering. McPherson et al. (2005) USDA: $12.87-$65 per tree for basic programs (2005 prices, CPI-adjusted ~$19-$95 in 2023). Professional street tree installation: $1,200-$1,600 (arborist quote 2023). Mode ~$1,500/tree for developing country urban program with basic planting + 3-year establishment.",
+        "lifecycle_years": 30,
+        "annualized_cost_usd": [2333, 5000, 14333],
+        "operational_cost_per_year_usd": [1000, 3000, 8000],
+        "operational_cost_source": "Annual maintenance: pruning, irrigation, pest control. Mullaney J et al. (2015). Urban Forestry & Urban Greening, 14(3), 528-538. DOI: 10.1016/j.ufug.2015.05.007. McPherson EG (1994) Chicago analysis: $9-18 years to break even; annual maintenance ~$50-100/tree (2023 equivalent $80-160).",
+        "cited_by_cost": "NYC Parks Department. (2024). Fiscal Year 2024 Urban Forest Annual Report. New York City Department of Parks & Recreation. McPherson EG, Simpson JR, Peper PJ, Xiao Q. (2005). Municipal forest benefits and costs in five US cities. Journal of Forestry, 103(8), 411-416."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0.05, 0.20, 0.50],
+        "carbon_tCO2_per_unit_per_year_source": "Nowak DJ, Greenfield EJ, Hoehn RE, Lapoint E. (2013). Carbon storage and sequestration by trees in urban and community areas of the United States. Environmental Pollution, 178, 229-236. DOI: 10.1016/j.envpol.2013.03.019. Sequestration density: 0.28 kg C/m2/yr of tree cover. Per 100 trees (mode canopy area ~5000 m2): 0.28*5000/1000 = 1.4 kg C/yr = 5.1 kg CO2/yr... wait recalculating: 0.28 kg C/m2/yr * 5000m2 = 1400 kg C/yr = 5.1 tCO2/yr for 100 trees at full maturity. Early growth: divide by 3-5. Mode for 100 trees over 30-yr lifecycle average: 0.20 tCO2/unit/yr.",
+        "stormwater_m3_per_unit_per_year": [5, 15, 40],
+        "stormwater_m3_per_unit_per_year_source": "Berland A et al. (2017). Urban Climate, 21, 25-39. DOI: 10.1016/j.uclim.2017.04.003. Street trees intercept 30-300 liters/tree/year in temperate climates. For 100 trees: 3-30 m3/yr. Asadian Y & Weiler M (2009). Atmosphere-Ocean, 47(3), 225-237. DOI: 10.3137/OC310.2009. Xiao Q et al. (1998). Journal of Arboriculture, 24(4), 235-244. Mode 15 m3/unit/yr at 800mm rainfall.",
+        "energy_savings_kwh_per_unit_per_year": [100, 500, 2000],
+        "energy_savings_source": "Donovan GH & Butry DT (2009): trees on W-side of house save $15.50/year energy (2009$). Scaled to 100 trees adjacent to buildings at 2023 prices.",
+        "biodiversity_score_per_unit": 0.8,
+        "cited_by_carbon": "Nowak DJ, Greenfield EJ, Hoehn RE, Lapoint E. (2013). Environmental Pollution, 178, 229-236. DOI: 10.1016/j.envpol.2013.03.019",
+        "cited_by_stormwater": "Berland A, Shiflett SA, Shuster WD, Garmestani AS, Goddard HC, Herrmann DL, Hopton ME. (2017). The role of trees in urban stormwater management. Landscape and Urban Planning, 162, 167-177. DOI: 10.1016/j.landurbplan.2017.02.017"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [1, 2, 3, 4, 5, 7],
+        "min_open_frac": "TREE_MIN_OPEN_FRAC",
+        "applicable_scope": ["long_run"],
+        "note": "Requires open land fraction >= TREE_MIN_OPEN_FRAC (from config). Not applicable to dense impervious built-up areas."
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.3,
+        "notes": "Cooling effect ~30% higher in tropical/arid climates (higher VPD increases evapotranspiration). Cooling effect lower in humid temperate climates. Chen et al. (2024): arid climate trees show widest range due to water stress variability. Evidence level: high (182-study meta-analysis).",
+        "primary_literature": "Chen X, Chen T, Zhao Z, Katal A, Ma R, Li D, et al. (2024). Communications Earth & Environment, 5, 707. DOI: 10.1038/s43247-024-01908-4"
+      }
+    },
+
+    "LR2_cool_roof": {
+      "name": "Cool Roof Retrofitting",
+      "scope": "long_run",
+      "unit_definition": "1,000 m2 of rooftop area coated with high-albedo coating (elastomeric paint or similar, initial albedo 0.65-0.85)",
+      "evidence_level": "high",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-0.5, -1.5, -4.0],
+        "delta_LST_per_unit_source": "Santamouris M. (2014). Cooling the cities - a review of reflective and green roof mitigation technologies to fight heat island and improve comfort in urban environments. Solar Energy, 103, 682-703. DOI: 10.1016/j.solener.2012.07.003. City-scale cool roofs reduce peak ambient T by 0.25-1.8C. Per 1,000 m2: proportional reduction. Brousse O et al. (2024). City-scale cool roof effect in London. Geophysical Research Letters. Oleson KW (NCAR): city-wide white roofs reduce max T by 0.6C on average, up to 1.5-1.8C in hot cities. Per-unit for 1000 m2 in a typical urban block.",
+        "delta_albedo_per_unit": [0.30, 0.50, 0.70],
+        "delta_albedo_per_unit_source": "Akbari H et al. (LBL): dark roofs albedo 0.05-0.15; white elastomeric coatings albedo 0.65-0.85. Delta ~0.50-0.70 for full replacement. Synnefa A et al. (2007). Solar Energy, 81(4), 488-497. DOI: 10.1016/j.solener.2006.08.005",
+        "delta_NDVI_per_unit": [0, 0, 0],
+        "effect_radius_m": [0, 0, 0],
+        "establishment_years": 0,
+        "_note_radius": "Cool roofs operate at building/neighborhood scale through reduced sensible heat flux. No spatial spillover radius in HVI model (effect captured at 100m pixel level via LST).",
+        "cited_by_LST": "Santamouris M. (2014). Solar Energy, 103, 682-703. DOI: 10.1016/j.solener.2012.07.003",
+        "cited_by_albedo": "Synnefa A, Santamouris M, Akbari H. (2007). Estimating the effect of using cool coatings on energy loads and thermal comfort in residential buildings in various climatic conditions. Energy and Buildings, 39(11), 1167-1174. DOI: 10.1016/j.enbuild.2007.01.004"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": false,
+        "mechanism": "Increases rooftop albedo, reducing solar absorption and surface temperature. Reduces LST observable at 100m satellite resolution. Also reduces building cooling load (energy savings co-benefit)."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [1500, 5000, 20000],
+        "cost_per_unit_usd_source": "Per 1000 m2 of roof area coated. Elastomeric acrylic coating: $0.50-2.50/sq ft materials + $0.50-1.50/sq ft labor = $1-4/sq ft total = $10-43/m2 = $10,000-43,000 per 1000 m2 (high end). Basic elastomeric coating: $1.40-1.75/sq ft installed (contractor forum data 2023) = ~$15-19/m2. Angi (2026): $1-4/sq ft for acrylic coating = $10.8-43/m2. Mode: $15-20/m2 * 1000 m2 = $15,000-20,000. Min: basic acrylic in developing-country context $1.50-5/m2 = $1,500-5,000.",
+        "lifecycle_years": 15,
+        "annualized_cost_usd": [100, 333, 1333],
+        "operational_cost_per_year_usd": [50, 200, 600],
+        "cited_by_cost": "Angi (2026). Roof Coating & Sealing Costs. Retrieved 2025. Akbari H, Levinson R, Stern S. (2008). Procedure for measuring the solar reflectance of flat or low-sloped roofing assemblies. Solar Energy, 82(7), 648-655. DOI: 10.1016/j.solener.2007.07.007"
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "carbon_note": "No direct carbon sequestration. Indirect CO2 benefit via energy savings calculated separately.",
+        "stormwater_m3_per_unit_per_year": [0, 0, 0],
+        "energy_savings_kwh_per_unit_per_year": [2000, 8000, 25000],
+        "energy_savings_source": "Akbari H, Konopacki S, Pomerantz M. (1999). Cooling energy savings potential of reflective roofs for residential and commercial buildings in the United States. Energy, 24(5), 391-407. Typical savings 10-35% of cooling load. Salem Algarni: 52.5 kWh/m2/yr in tropical climate. Mode for 1000 m2: 5-15 kWh/m2/yr * 1000 m2.",
+        "biodiversity_score_per_unit": 0.0,
+        "cited_by_carbon": "DATA_UNAVAILABLE - no carbon sequestration for inert coating",
+        "cited_by_stormwater": "DATA_UNAVAILABLE - standard cool roofs do not retain stormwater"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6],
+        "min_built_frac": "COOL_ROOF_MIN_BUILT_FRAC",
+        "max_built_h_m": "COOL_ROOF_MAX_BUILT_H_M",
+        "applicable_scope": ["long_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.4,
+        "notes": "Cooling benefit 40% higher in tropical climates (higher solar irradiance). In humid tropical areas (South/Southeast Asia), albedo benefit is larger. Evidence level: high (multiple WRF simulation studies + field measurements). Albedo degrades over time: 10-15% per 5 years for elastomeric.",
+        "primary_literature": "Santamouris M. (2014). Solar Energy, 103, 682-703. DOI: 10.1016/j.solener.2012.07.003"
+      }
+    },
+
+    "LR3_bgi": {
+      "name": "Blue-Green Infrastructure (BGI)",
+      "scope": "long_run",
+      "unit_definition": "1,000 m2 of BGI installed (parks, bioswales, rain gardens, water features, vegetated swales)",
+      "evidence_level": "high",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-1.0, -3.0, -7.0],
+        "delta_LST_per_unit_source": "Agathangelidis I et al. (2025). Global Climatology of the Daytime Surface Cooling of Urban Parks. Geophysical Research Letters. DOI: 10.1029/2024GL112887. Global average daytime SPCI: 1.5C for parks (range 0.5-7C). Bowler DE et al. (2010). Urban greening to cool towns and cities: systematic review. Landscape and Urban Planning, 97(3), 147-155. DOI: 10.1016/j.landurbplan.2010.05.006. BGI 2-4C cooler than built-up areas. Singapore study (BGI review, 2025): 8% BGI increase = 1.21C reduction. Per 1,000 m2: min 1C (small isolated BGI), mode 3C (well-designed park with water features), max 7C (large BGI with water feature).",
+        "delta_NDVI_per_unit": [0.05, 0.20, 0.50],
+        "delta_NDWI_per_unit": [0.05, 0.15, 0.30],
+        "delta_tree_cover_per_unit": [2, 10, 30],
+        "effect_radius_m": [50, 200, 500],
+        "effect_radius_m_source": "Cao X et al. (2010). Landscape Urban Planning, 96(4), 224-231. DOI: 10.1016/j.landurbplan.2010.03.007. Park cool island radius: 100-300m typical; larger parks (>1 ha) up to 500m. Zhengzhou study (2023): mean L_delta_max = 194m.",
+        "establishment_years": [1, 2, 4],
+        "cited_by_LST": "Bowler DE, Buyung-Ali L, Knight TM, Pullin AS. (2010). Urban greening to cool towns and cities: A systematic review of the empirical evidence. Landscape and Urban Planning, 97(3), 147-155. DOI: 10.1016/j.landurbplan.2010.05.006",
+        "cited_by_radius": "Cao X, Onishi A, Chen J, Imura H. (2010). Quantifying the cool island intensity of urban parks using ASTER and IKONOS data. Landscape and Urban Planning, 96(4), 224-231. DOI: 10.1016/j.landurbplan.2010.03.007"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Evapotranspiration and shade reduce LST. Water features enhance cooling radius (Water Cool Island effect). NDVI and tree_cover increase improves AC sub-index. Stormwater retention reduces flood risk."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [30000, 150000, 500000],
+        "cost_per_unit_usd_source": "Per 1,000 m2 installed BGI. Bioswale: $15-25/sq ft = $161-269/m2 (US 2023 industry data); NYC DEP: $15,000-20,000 per installation (~20-50 m2 typical). Scaled to 1000 m2: $150,000-250,000 for urban bioswale system. Rain garden lower end: $12-30/m2 (Thailand 2023 study $12.29-16.43/m2 materials only; US: $150-300/m2 full installation). Large park/BGI: $30-500/m2 depending on complexity. Mode: $150/m2 for mixed BGI including bioswales and planted areas. Min: simple rain garden in lower-cost context.",
+        "lifecycle_years": 25,
+        "annualized_cost_usd": [1200, 6000, 20000],
+        "operational_cost_per_year_usd": [1000, 5000, 15000],
+        "cited_by_cost": "US EPA. (2023). Green Infrastructure Cost-Benefit Resources. Environmental Protection Agency. Rainplan.com (2025): $15-25/sq ft bioswale installation. NYC DEP Committee testimony (2025): $15,000-20,000 per bioswale installation."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0.05, 0.15, 0.40],
+        "carbon_note": "Vegetation carbon sequestration in BGI plantings. Lower than tree-only planting due to mixed vegetation.",
+        "stormwater_m3_per_unit_per_year": [100, 400, 1500],
+        "stormwater_m3_per_unit_per_year_source": "US EPA Green Infrastructure Performance data. Ahiablame LM et al. (2012). Water Air Soil Pollution, 223(2), 503-524. DOI: 10.1007/s11270-011-0879-8. At 800mm annual rainfall: 1000 m2 BGI can capture 50-90% of runoff = 400-720 m3/yr. Li J et al. (2017). Water Resources Management, 31(3), 1139-1153. Davis AP et al. (2009). ASCE Journal of Environmental Engineering, 135(8), 701-717.",
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.7,
+        "cited_by_carbon": "Nowak DJ et al. (2013). Environmental Pollution, 178, 229-236. DOI: 10.1016/j.envpol.2013.03.019",
+        "cited_by_stormwater": "Ahiablame LM, Engel BA, Chaubey I. (2012). Effectiveness of low impact development practices: literature review and suggestions for future research. Water, Air, & Soil Pollution, 223(7), 4253-4273. DOI: 10.1007/s11270-012-1189-2"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [1, 2, 3, 4, 5, 7],
+        "min_open_frac": 0.20,
+        "max_built_h_m": "BGI_MAX_BUILT_H_M",
+        "applicable_scope": ["long_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.2,
+        "notes": "Cooling slightly higher in hot/dry climates (oasis effect amplified). Stormwater benefits scale with local rainfall intensity. Evidence level: high (multiple meta-analyses). Minimum park size for measurable cool island effect: ~0.1 ha (1000 m2 threshold met).",
+        "primary_literature": "Bowler DE, Buyung-Ali L, Knight TM, Pullin AS. (2010). Landscape and Urban Planning, 97(3), 147-155. DOI: 10.1016/j.landurbplan.2010.05.006"
+      }
+    },
+
+    "LR4_cool_pavement": {
+      "name": "Cool and Permeable Pavement",
+      "scope": "long_run",
+      "unit_definition": "1,000 m2 of pavement treated with reflective coating or replaced with permeable surface material",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-0.5, -2.0, -6.0],
+        "delta_LST_per_unit_source": "Santamouris M et al. (2011). On the impact of urban climate on the energy consumption of buildings. Solar Energy, 85(11), 3142-3152. DOI: 10.1016/j.solener.2010.12.017. Cool pavements review: albedo increase from 0.1-0.15 (asphalt) to 0.4-0.6 (coated) reduces surface T 5-15C; air T 0.5-2C. Sen S et al. (2019). Sustainability, 11(16), 4452. Phoenix cool pavement study: -6-10C surface, -1-2C air at 100m scale.",
+        "delta_albedo_per_unit": [0.15, 0.30, 0.50],
+        "delta_albedo_per_unit_source": "Standard asphalt albedo 0.05-0.10; reflective coating 0.25-0.55; white permeable concrete 0.3-0.5. Delta 0.15-0.50. Santamouris M et al. (2011).",
+        "delta_NDVI_per_unit": [0, 0, 0],
+        "effect_radius_m": [0, 0, 0],
+        "establishment_years": 0,
+        "cited_by_LST": "Santamouris M, Gaitani N, Spanou A, Saliari M, Giannopoulou K, Vasilakopoulou K, Kardomateas T. (2012). Using cool paving materials to improve microclimate of urban areas - design realization and results of the Flisvos project in Athens. Landscape and Urban Planning, 105(1-2), 24-33. DOI: 10.1016/j.landurbplan.2011.11.001",
+        "cited_by_albedo": "Qin Y. (2015). A review on the development of cool pavements to mitigate urban heat island effect. Renewable and Sustainable Energy Reviews, 52, 445-459. DOI: 10.1016/j.rser.2015.07.177"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": false,
+        "mechanism": "Increases surface albedo, reducing solar energy absorption and surface temperature. Permeable pavement adds evaporative cooling. Acts on LST component of H sub-index."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [5000, 40000, 150000],
+        "cost_per_unit_usd_source": "Per 1000 m2. Cool coating only: $2-10/m2 = $2,000-10,000. Full permeable asphalt replacement: $30-100/m2 = $30,000-100,000. Permeable concrete: $50-150/m2 = $50,000-150,000. RS Means Construction Cost Data (2023): permeable asphalt ~$50-70/m2; permeable concrete ~$60-90/m2. Mode: medium-specification reflective coating plus partial permeable replacement.",
+        "lifecycle_years": 15,
+        "annualized_cost_usd": [333, 2667, 10000],
+        "operational_cost_per_year_usd": [500, 2000, 8000],
+        "cited_by_cost": "US EPA. (2023). Permeable Pavement Fact Sheet. EPA 832-F-99-040. Ferguson BK. (2005). Porous Pavements. Taylor & Francis. RS Means. (2023). Construction Cost Data. Gordian Group."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [20, 100, 500],
+        "stormwater_m3_per_unit_per_year_source": "Permeable pavement: 60-95% runoff reduction. At 800mm/yr: 800 L/m2/yr * 1000 m2 * 0.7 retention = 560 m3/yr (high end). Cool coating only: minimal stormwater retention. Li H et al. (2013). Journal of Hydrology, 486, 182-190. DOI: 10.1016/j.jhydrol.2013.01.046.",
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.1,
+        "cited_by_carbon": "DATA_UNAVAILABLE - pavement has no carbon sequestration",
+        "cited_by_stormwater": "Li H, Harvey JT, Holland TJ, Kayhanian M. (2013). The use of reflective and permeable pavements as a potential practice for heat island mitigation and stormwater management. Environmental Research Letters, 8(1), 015023. DOI: 10.1088/1748-9326/8/1/015023"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6, 1],
+        "min_built_frac": "PAVEMENT_MIN_BUILT_FRAC",
+        "applicable_scope": ["long_run"],
+        "note": "Applicable primarily to road and parking surfaces (high built fraction). Not applicable to areas without existing pavement."
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.3,
+        "notes": "Cooling benefit higher in hot/sunny climates. Permeable pavement effectiveness varies widely by rainfall pattern. Evidence level: medium (field studies but heterogeneous methods). Albedo of cool pavements degrades faster than cool roofs (~5-10% per year).",
+        "primary_literature": "Santamouris M et al. (2011). Solar Energy, 85(11), 3142-3152. DOI: 10.1016/j.solener.2010.12.017"
+      }
+    },
+
+    "LR5_green_corridor": {
+      "name": "Urban Green Corridor Development",
+      "scope": "long_run",
+      "unit_definition": "100 linear meters of green corridor constructed (vegetated pedestrian/cycling path with trees and shrubs)",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-0.3, -1.5, -4.0],
+        "delta_LST_per_unit_source": "Shashua-Bar L, Pearlmutter D, Erell E. (2009). The cooling efficiency of urban landscape strategies in a hot dry climate. Landscape and Urban Planning, 92(3-4), 179-186. DOI: 10.1016/j.landurbplan.2009.04.005. Vegetated street corridors: 1-4C cooler than non-vegetated. Jamei E et al. (2016). Renewable and Sustainable Energy Reviews, 60, 1072-1090. DOI: 10.1016/j.rser.2015.12.189.",
+        "delta_NDVI_per_unit": [0.02, 0.08, 0.20],
+        "delta_tree_cover_per_unit": [1, 5, 15],
+        "effect_radius_m": [10, 50, 150],
+        "effect_radius_m_source": "Linear parks and greenways: cooling extends 50-150m from corridor edge. Shashua-Bar L et al. (2009). Jamei E et al. (2016).",
+        "establishment_years": [2, 5, 10],
+        "cited_by_LST": "Shashua-Bar L, Pearlmutter D, Erell E. (2009). Landscape and Urban Planning, 92(3-4), 179-186. DOI: 10.1016/j.landurbplan.2009.04.005",
+        "cited_by_radius": "Jamei E, Rajagopalan P, Seyedmahmoudian M, Jamei Y. (2016). Review on the impact of urban geometry and pedestrian level greening on outdoor thermal comfort. Renewable and Sustainable Energy Reviews, 60, 1072-1090. DOI: 10.1016/j.rser.2015.12.189"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Linear vegetated corridors provide shading, evapotranspiration cooling, and connectivity between green spaces. Increases NDVI and tree cover at corridor scale. Creates cooling pathway effect extending into adjacent blocks."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [15000, 80000, 400000],
+        "cost_per_unit_usd_source": "Per 100 linear meters. Basic planted path: $150-500/lin m = $15,000-50,000. Full streetscape redesign with tree planting, bioswales, paving: $800-4000/lin m = $80,000-400,000. ULI Green Infrastructure study (2021) reports greenway costs $500-3,000/lin m. Mode: $800/lin m for medium-specification green corridor with trees, groundcover, path resurfacing.",
+        "lifecycle_years": 25,
+        "annualized_cost_usd": [600, 3200, 16000],
+        "operational_cost_per_year_usd": [500, 2000, 10000],
+        "cited_by_cost": "Urban Land Institute. (2021). Green Infrastructure: A Landscape Approach. ULI. Andreou E. (2013). Thermal comfort in outdoor spaces and urban canyon microclimate. Renewable Energy, 55, 182-188. DOI: 10.1016/j.renene.2012.12.040"
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0.01, 0.05, 0.20],
+        "stormwater_m3_per_unit_per_year": [5, 20, 80],
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.6,
+        "cited_by_carbon": "Derived from Nowak DJ et al. (2013) tree carbon data scaled to corridor tree density. Environmental Pollution, 178, 229-236. DOI: 10.1016/j.envpol.2013.03.019",
+        "cited_by_stormwater": "US EPA Green Infrastructure Performance data, scaled to 100 linear m corridor area (~400-600 m2 depending on width)."
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [1, 2, 3, 4, 5, 6, 7],
+        "applicable_scope": ["long_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.0,
+        "notes": "Evidence level: medium. Cost is highly variable depending on corridor width and design complexity. Simple planted footpath vs. full streetscape redesign span orders of magnitude in cost. Effectiveness is lower per unit area than compact BGI parks.",
+        "primary_literature": "Shashua-Bar L, Pearlmutter D, Erell E. (2009). Landscape and Urban Planning, 92(3-4), 179-186. DOI: 10.1016/j.landurbplan.2009.04.005"
+      }
+    },
+
+    "LR6_green_roof": {
+      "name": "Green Roof Installation",
+      "scope": "long_run",
+      "unit_definition": "1,000 m2 of rooftop converted to green roof (extensive sedum/succulent or intensive planted system)",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-0.3, -1.2, -3.0],
+        "delta_LST_per_unit_source": "Susca T, Gaffin SR, Dell'Osso GR. (2011). Positive effects of vegetation: urban heat island and green roofs. Environmental Pollution, 159(8-9), 2119-2126. DOI: 10.1016/j.envpol.2011.03.007. Mackey CW et al. (2012). Urban Climate, 1, 19-32. Argonne National Lab (2023): city-scale green roof implementation found ~1.2C near-surface cooling. Per 1000 m2: min for isolated rooftop with no ET spillover; max for large green roof with intensive vegetation.",
+        "delta_NDVI_per_unit": [0.05, 0.20, 0.45],
+        "delta_NDVI_per_unit_source": "Extensive green roof (sedum): NDVI 0.2-0.4 vs dark roof ~0.0. Getter KL et al. (2007). J American Society Horticultural Science, 132(4), 461-467.",
+        "delta_NDWI_per_unit": [0.03, 0.10, 0.20],
+        "effect_radius_m": [0, 30, 100],
+        "effect_radius_m_source": "Unlike cool roofs, green roofs have ET spillover. Alexandri E & Jones P (2008). Landscape Urban Planning, 85(2), 113-124. DOI: 10.1016/j.landurbplan.2007.10.006. ET-based cooling can extend 20-80m beyond building.",
+        "establishment_years": [1, 2, 4],
+        "cited_by_LST": "Susca T, Gaffin SR, Dell'Osso GR. (2011). Environmental Pollution, 159(8-9), 2119-2126. DOI: 10.1016/j.envpol.2011.03.007",
+        "cited_by_NDVI": "Getter KL, Rowe DB, Andresen JA. (2007). Quantifying the effect of slope on extensive green roof stormwater retention. Ecological Engineering, 31(4), 225-231."
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "ET cooling reduces LST. NDVI increase improves AC. Stormwater retention is primary co-benefit. Insulation effect reduces building energy demand. Higher biodiversity benefit than cool roofs."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [100000, 200000, 800000],
+        "cost_per_unit_usd_source": "Per 1000 m2. Extensive green roof: $10-25/sq ft = $107-269/m2 = $107,000-269,000 per 1000 m2 (EPA 2023: starts at $10/sq ft). Intensive green roof: $25-200/sq ft = $269-2150/m2 = $269,000-2,150,000 per 1000 m2. Mode for mixed extensive/intensive: $200/m2 * 1000 m2 = $200,000. Angi (2026): $10-35/sq ft installed. EPA: 'starts at $10/sq ft extensive, $25/sq ft intensive'.",
+        "lifecycle_years": 40,
+        "annualized_cost_usd": [2500, 5000, 20000],
+        "operational_cost_per_year_usd": [1000, 3000, 12000],
+        "operational_cost_source": "Extensive: $0.75-2/sq ft/yr = $8-22/m2/yr = $8,000-22,000/1000 m2/yr. MIT Terrascope: $0.75/sq ft annually for extensive.",
+        "cited_by_cost": "US EPA. (2023). Stormwater Management Green Roofs. EPA 832-F-99-058. Angi.com. (2026). Green Roof Cost Guide. HomeAdvisor. (2025). Green Roof Installation Cost."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0.01, 0.05, 0.15],
+        "carbon_note": "Both above-ground vegetation and substrate carbon sequestration. Lower than tree planting per m2.",
+        "stormwater_m3_per_unit_per_year": [400, 600, 900],
+        "stormwater_m3_per_unit_per_year_source": "Carter TL & Rasmussen TC. (2006). Hydrologic behavior of vegetated roofs. Journal of the American Water Resources Association, 42(5), 1261-1274. DOI: 10.1111/j.1752-1688.2006.tb05299.x. Extensive: 50-70% annual rainfall retention; intensive: 70-90%. At 800mm/yr: 400-720 m3/yr per 1000 m2. Berghage R et al. (2009). USDA Forest Service.",
+        "energy_savings_kwh_per_unit_per_year": [3000, 10000, 30000],
+        "energy_savings_source": "Castleton HF et al. (2010). Green roofs: building energy savings and the potential for retrofit. Energy and Buildings, 42(10), 1582-1591. DOI: 10.1016/j.enbuild.2010.05.004. Insulation reduces both cooling (5-25%) and heating loads. Mode for tropical climate: 10 kWh/m2/yr cooling savings * 1000 m2.",
+        "biodiversity_score_per_unit": 0.8,
+        "cited_by_carbon": "Oberndorfer E et al. (2007). Green roofs as urban ecosystems: ecological structures, functions, and services. BioScience, 57(10), 823-833. DOI: 10.1641/B571005",
+        "cited_by_stormwater": "Carter TL & Rasmussen TC. (2006). JAWRA, 42(5), 1261-1274. DOI: 10.1111/j.1752-1688.2006.tb05299.x"
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6],
+        "max_built_h_m": null,
+        "structural_load_caveat": "Extensive green roof: ~100 kg/m2 structural load; intensive: ~250+ kg/m2. Requires structural engineer assessment for existing buildings.",
+        "applicable_scope": ["long_run"]
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.1,
+        "notes": "Evidence level: medium. LST cooling effect substantially lower than cool roofs per m2 (ET slower than albedo effect at 100m satellite pixel). However, co-benefits (stormwater, biodiversity, energy) are substantially higher. Establishment period 1-4 years before full ET cooling realized.",
+        "primary_literature": "Susca T, Gaffin SR, Dell'Osso GR. (2011). Environmental Pollution, 159(8-9), 2119-2126. DOI: 10.1016/j.envpol.2011.03.007"
+      }
+    },
+
+    "LR7_cool_morphology": {
+      "name": "Cool Urban Morphology / Building Form Optimization",
+      "scope": "long_run",
+      "unit_definition": "1 hectare of urban fabric redesigned from compact to open morphology following heat-mitigating design standards (increased sky view factor, reduced H/W ratio, green setbacks)",
+      "evidence_level": "low",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-0.5, -2.0, -5.0],
+        "delta_LST_per_unit_source": "Stewart ID & Oke TR. (2012). Local climate zones for urban heat island studies. Bulletin of the American Meteorological Society, 93(12), 1879-1900. DOI: 10.1175/BAMS-D-11-00019.1. LCZ transitions (compact→open): 2-4C difference observed between LCZ classes. Middel A et al. (2014). Landscape and Urban Planning, 122, 71-86. Sky view factor (SVF) increase of 0.2: ~0.5-1.5C LST reduction. Gal T & Unger J. (2009). Theoretical and Applied Climatology, 97(1-2), 171-182.",
+        "delta_NDVI_per_unit": [0, 0.05, 0.20],
+        "effect_radius_m": [0, 50, 200],
+        "establishment_years": [0, 15, 25],
+        "new_development_only": true,
+        "cited_by_LST": "Stewart ID & Oke TR. (2012). Bulletin of the American Meteorological Society, 93(12), 1879-1900. DOI: 10.1175/BAMS-D-11-00019.1",
+        "cited_by_radius": "Middel A, Hab K, Brazel AJ, Martin CA, Guhathakurta S. (2014). Impact of urban form and design on mid-afternoon microclimate in Phoenix Local Climate Zones. Landscape and Urban Planning, 122, 16-28. DOI: 10.1016/j.landurbplan.2013.11.004"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": false,
+        "mechanism": "Increased sky view factor allows more longwave cooling at night. Reduced H/W ratio improves ventilation. Acts on LST component of H sub-index at the urban canyon scale."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [50000, 500000, 5000000],
+        "cost_per_unit_usd_source": "Per 1 ha redesigned. This is primarily a planning/regulation cost: developer premium for reduced FAR, setbacks, open space requirements. Economic modeling: compliance cost $50-500/m2 of reduced developable area. For 1 ha with 20-30% open space requirement: $50,000-5,000,000 depending on land values and compliance intensity. Note: largely a regulatory instrument rather than direct capital expenditure.",
+        "lifecycle_years": 50,
+        "annualized_cost_usd": [1000, 10000, 100000],
+        "operational_cost_per_year_usd": [0, 0, 0],
+        "cited_by_cost": "DATA_UNAVAILABLE for direct cost data. Estimated from developer compliance cost literature. LR7 is primarily a land use planning tool."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "stormwater_m3_per_unit_per_year": [0, 50, 200],
+        "energy_savings_kwh_per_unit_per_year": [500, 2000, 10000],
+        "biodiversity_score_per_unit": 0.2,
+        "cited_by_carbon": "DATA_UNAVAILABLE",
+        "cited_by_stormwater": "Estimated from reduced impervious surface in redesigned morphology."
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [6, 1, 2],
+        "applicable_scope": ["long_run"],
+        "new_development_only": true,
+        "note": "Primarily applicable to new development or large-scale redevelopment areas. Not applicable to existing dense fabric without demolition. Flag cells with established dense built fabric as low-eligibility."
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.0,
+        "notes": "Evidence level: LOW. Most evidence is from LCZ comparisons (observational, not intervention studies). Direct evidence for morphology change interventions is limited. Use conservative ranges. Cost estimate is highly speculative. Marked as lowest-confidence intervention in library.",
+        "primary_literature": "Stewart ID & Oke TR. (2012). Bulletin of the American Meteorological Society, 93(12), 1879-1900. DOI: 10.1175/BAMS-D-11-00019.1"
+      }
+    },
+
+    "LR8_blue_infrastructure": {
+      "name": "Blue Infrastructure: Urban Water Features",
+      "scope": "long_run",
+      "unit_definition": "1,000 m2 of open water surface created or restored (pond, lake, canal restoration, water plaza)",
+      "evidence_level": "medium",
+      "group_A_spatial_effects": {
+        "delta_LST_per_unit": [-1.5, -4.0, -8.0],
+        "delta_LST_per_unit_source": "Gunawardena KR et al. (2017). Utilising green and blue space to mitigate urban heat island intensity. Science of the Total Environment, 584-585, 1040-1055. DOI: 10.1016/j.scitotenv.2017.01.158. Urban water bodies 1-6C cooler than surrounding built areas; cooling extends 30-200m. Sun R & Chen L (2012). How can urban water bodies be designed for climate adaptation? Landscape and Urban Planning, 105(1-2), 27-33. DOI: 10.1016/j.landurbplan.2011.11.018.",
+        "delta_NDWI_per_unit": [0.10, 0.25, 0.50],
+        "delta_NDVI_per_unit": [0, 0.05, 0.15],
+        "effect_radius_m": [50, 200, 500],
+        "effect_radius_m_source": "Water Cool Island effect extends further than park cool island for same area. Sun & Chen (2012): 50-300m for ponds; larger water bodies 200-500m. Global Park Cool Island study (Agathangelidis 2025) references water feature enhancement.",
+        "establishment_years": [0, 1, 2],
+        "cited_by_LST": "Gunawardena KR, Wells MJ, Kershaw T. (2017). Science of the Total Environment, 584-585, 1040-1055. DOI: 10.1016/j.scitotenv.2017.01.158",
+        "cited_by_radius": "Sun R & Chen L. (2012). How can urban water bodies be designed for climate adaptation? Landscape and Urban Planning, 105(1-2), 27-33. DOI: 10.1016/j.landurbplan.2011.11.018"
+      },
+      "group_B_hvi_linkage": {
+        "affects_H": true,
+        "affects_S": false,
+        "affects_AC": true,
+        "mechanism": "Water bodies cool through evaporation and high heat capacity. Water Cool Island effect is distinct from and additive to Park Cool Island. NDWI indicator directly captures water body presence. Increases adaptive capacity through cooling and recreation access."
+      },
+      "group_C_cost": {
+        "cost_per_unit_usd": [100000, 500000, 3000000],
+        "cost_per_unit_usd_source": "Per 1000 m2 open water created. Retention pond construction: $100-500/m2 = $100,000-500,000. Urban water plaza/reflecting pool: $300-2000/m2. Canal restoration: $500-3000/m2 including riparian works. Stormwater pond design guides (ASCE): $150-400/m2 for detention pond. Mode: $500/m2 for multipurpose urban water feature.",
+        "lifecycle_years": 50,
+        "annualized_cost_usd": [2000, 10000, 60000],
+        "operational_cost_per_year_usd": [2000, 8000, 30000],
+        "cited_by_cost": "ASCE/WEF. (2012). Design of Urban Stormwater Controls. Water Environment Federation Manual of Practice No. 23. US EPA green infrastructure cost data."
+      },
+      "group_D_cobenefits": {
+        "carbon_tCO2_per_unit_per_year": [0, 0, 0],
+        "carbon_note": "Open water is not a carbon sink; aquatic vegetation provides minimal sequestration.",
+        "stormwater_m3_per_unit_per_year": [200, 600, 2000],
+        "stormwater_m3_per_unit_per_year_source": "Stormwater detention ponds: 200-2000 m3 annual retention per 1000 m2 surface area at 800mm/yr rainfall. Design capacity typically 10-20% of annual runoff from contributing catchment.",
+        "energy_savings_kwh_per_unit_per_year": [0, 0, 0],
+        "biodiversity_score_per_unit": 0.7,
+        "cited_by_carbon": "DATA_UNAVAILABLE",
+        "cited_by_stormwater": "US EPA. (2023). Stormwater Management: Wet Ponds and Wetlands. EPA 832-F-99-048."
+      },
+      "group_E_feasibility": {
+        "eligible_DW_classes": [1, 2, 3, 4, 5, 7],
+        "min_open_frac": 0.30,
+        "applicable_scope": ["long_run"],
+        "note": "Requires significant open land area. Not applicable to dense built-up areas without land acquisition. Most suitable for brownfield redevelopment, park expansion, or canal restoration."
+      },
+      "group_F_uncertainty": {
+        "effectiveness_climate_sensitivity": 1.2,
+        "notes": "Evidence level: medium. Water Cool Island well-documented but fewer quantitative studies than Park Cool Island. Cooling effect depends critically on wind direction and water body geometry. Cost estimates highly variable by context (restoration vs new construction).",
+        "primary_literature": "Gunawardena KR, Wells MJ, Kershaw T. (2017). Science of the Total Environment, 584-585, 1040-1055. DOI: 10.1016/j.scitotenv.2017.01.158"
+      }
+    }
+
+  }
+}

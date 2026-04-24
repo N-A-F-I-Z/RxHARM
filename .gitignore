@@ -1,0 +1,87 @@
+# ── Project RxHARM .gitignore ──────────────────────────────────────────────────
+
+# ── Python cache & compiled files ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+
+# ── Distribution / packaging ──────────────────────────────────────────────────
+.eggs/
+*.egg-info/
+dist/
+build/
+*.egg
+MANIFEST
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ── Testing & coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.coveragerc
+
+# ── Jupyter / Colab notebooks ─────────────────────────────────────────────────
+# Keep notebook structure but ignore output cells and checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+# Uncomment the line below to strip all notebook outputs before committing:
+# *.ipynb
+
+# ── GEE / Google credentials ──────────────────────────────────────────────────
+# NEVER commit authentication tokens or service account keys
+credentials.json
+service_account_key.json
+.earthengine/
+~/.config/earthengine/
+
+# ── Geospatial data outputs ────────────────────────────────────────────────────
+# Large rasters, shapefiles, and exports should not be tracked in git
+*.tif
+*.tiff
+*.geotiff
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.nc
+*.zarr/
+outputs/
+data/raw/
+data/processed/
+data/exports/
+
+# ── IDE and editor files ──────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── mypy type checking ────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ── Secrets & local config ────────────────────────────────────────────────────
+.env.local
+secrets.yaml
+config.local.py
+
+# ── Temporary files ────────────────────────────────────────────────────────────
+*.tmp
+*.log
+*.bak
