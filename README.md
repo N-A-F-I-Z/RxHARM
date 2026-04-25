@@ -18,14 +18,14 @@ Engine (free tier) are required.
 
 ### Option A — Development mode (clone repo)
 ```bash
-git clone https://github.com/YOUR_USERNAME/rxharm.git
+git clone https://github.com/N-A-F-I-Z/rxharm.git
 cd rxharm
 pip install -e .
 ```
 
 ### Option B — Install directly from GitHub (Colab)
 ```python
-!pip install -q git+https://github.com/YOUR_USERNAME/rxharm.git
+!pip install -q git+https://github.com/N-A-F-I-Z/rxharm.git
 ```
 
 ---
@@ -53,7 +53,7 @@ rxharm.run(aoi)
 
 Open any notebook in Google Colab:
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/rxharm/blob/main/notebooks/01_HVI_HRI.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/N-A-F-I-Z/rxharm/blob/main/notebooks/01_HVI_HRI.ipynb)
 
 ---
 
@@ -169,11 +169,11 @@ so the proposed change can be discussed. Code must follow the style rules in
 If you use RxHARM in published research, please cite:
 
 ```bibtex
-@software{rxharm2024,
-  author    = {PLACEHOLDER},
+@software{rxharm2026,
+  author    = {Nafiz Al Mamun, Zannatul Adol Binte Abdul Aziz, Tanzim Mahmud Sami, Naushin Yeasmin},
   title     = {{Project RxHARM}: Prescriptive Optimization of Heat Associated Risk Mitigation},
-  year      = {2024},
-  url       = {https://github.com/YOUR_USERNAME/rxharm},
+  year      = {2026},
+  url       = {https://github.com/N-A-F-I-Z/rxharm},
   note      = {Version 0.1.0}
 }
 ```
@@ -182,4 +182,4 @@ If you use RxHARM in published research, please cite:
 
 ## License
 
-MIT © 2024 — see `LICENSE` for details.
+GNU General Public License v3.0 © 2026 — see `LICENSE` for details.
