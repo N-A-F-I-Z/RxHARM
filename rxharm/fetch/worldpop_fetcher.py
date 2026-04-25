@@ -177,13 +177,15 @@ class WorldPopFetcher:
         self, bounds: Optional[Tuple] = None
     ) -> Dict[str, np.ndarray]:
         """
-        Download all age-sex bands needed for HVI computation.
+        Download all age-sex bands needed for HVI computation in parallel.
 
         Returns
         -------
         dict
             Keys: 'child_0', 'child_1', 'elderly_65'…'elderly_80', 'total'
         """
+        import concurrent.futures
+        
         print(f"  Fetching WorldPop Global2: {self.iso3} year {self.year}")
 
         arrays: Dict[str, np.ndarray] = {}
@@ -201,30 +203,72 @@ class WorldPopFetcher:
             "elderly_90": ("t", 90),
         }
 
+        # Gather all unique download tasks
+        all_tasks = {}
         for key, (sex, age) in needed.items():
-            print(f"    Downloading {sex}_{age}...", end=" ")
+            task_key = f"{sex}_{age}"
+            all_tasks[task_key] = (sex, age)
+            
+        for age in ALL_AGE_BANDS:
+            task_key = f"t_{age}"
+            if task_key not in all_tasks:
+                all_tasks[task_key] = ("t", age)
+
+        print(f"    Fetching {len(all_tasks)} bands (trying direct VFS read first)...")
+        fetched_arrays = {}
+
+        def _fetch_task(task_args):
+            sex, age = task_args
+            url = self._build_url(sex, age)
+            
+            # Strategy 1: Direct VFS read via Rasterio HTTP Range Requests (sub-second)
+            if bounds is not None:
+                try:
+                    import rasterio
+                    # Use a short timeout so we don't hang if the server is slow to stream
+                    with rasterio.Env(GDAL_HTTP_TIMEOUT=15, GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR"):
+                        arr = self._read_band_array(url, bounds)
+                    if arr is not None:
+                        return f"{sex}_{age}", arr
+                except Exception:
+                    pass  # silently fall back to full download
+                    
+            # Strategy 2: Download full file and read locally (fallback)
             fp = self._download_band(sex, age)
             if fp is None:
                 fp = self._try_wpgp_package(sex, age)
+                
             if fp is not None:
-                arr = self._read_band_array(fp, bounds)
-                if arr is not None:
-                    arrays[key] = arr
-                    print("OK")
-                else:
-                    print("READ FAILED")
-            else:
-                print("DOWNLOAD FAILED")
+                return f"{sex}_{age}", self._read_band_array(fp, bounds)
+            return f"{sex}_{age}", None
+
+        # Execute in parallel with up to 10 threads
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            future_to_task = {executor.submit(_fetch_task, args): args for args in all_tasks.values()}
+            for future in concurrent.futures.as_completed(future_to_task):
+                try:
+                    task_key, arr = future.result()
+                    if arr is not None:
+                        fetched_arrays[task_key] = arr
+                    else:
+                        print(f"    FAILED to fetch: {task_key}")
+                except Exception as e:
+                    print(f"    Task exception: {e}")
+
+        # Map fetched arrays to output dictionary
+        for key, (sex, age) in needed.items():
+            task_key = f"{sex}_{age}"
+            if task_key in fetched_arrays:
+                arrays[key] = fetched_arrays[task_key]
 
         # Build total population from all age bands
         print("    Building total population from all age bands...")
         total: Optional[np.ndarray] = None
         for age in ALL_AGE_BANDS:
-            fp = self._download_band("t", age)
-            if fp is not None:
-                arr = self._read_band_array(fp, bounds)
-                if arr is not None:
-                    total = arr if total is None else total + np.nan_to_num(arr)
+            task_key = f"t_{age}"
+            if task_key in fetched_arrays:
+                arr = fetched_arrays[task_key]
+                total = arr if total is None else total + np.nan_to_num(arr)
 
         if total is not None:
             arrays["total"] = total
