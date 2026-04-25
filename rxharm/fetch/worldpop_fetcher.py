@@ -83,8 +83,9 @@ class WorldPopFetcher:
             return f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2000_2020/{self.year}/{self.iso3}/{filename}"
         else:
             # 2015-2030 dataset format (Global2 R2025A)
-            filename = f"{iso_lower}_{sex}_{age:02d}_{self.year}_CN_100m_R2025A_v1.tif"
-            return f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/{self.year}/{self.iso3}/v1/100m/constrained/{filename}"
+            # Use 1km resolution to make downloads extremely fast (~5MB vs ~500MB)
+            filename = f"{iso_lower}_{sex}_{age:02d}_{self.year}_CN_1km_R2025A_UA_v1.tif"
+            return f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/{self.year}/{self.iso3}/v1/1km_ua/constrained/{filename}"
 
     def _local_path(self, sex: str, age: int) -> Path:
         return self.cache_dir / f"{self.iso3}_{sex}_{age}_{self.year}.tif"
