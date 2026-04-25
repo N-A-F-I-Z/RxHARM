@@ -164,7 +164,7 @@ def fetch_all_indicators(
         raise
 
     # ── Merge all 14 bands ────────────────────────────────────────────────────
-    combined = ee.Image.cat([hazard_img, exposure_img, sensitivity_img, ac_img])
+    combined = ee.Image.cat([hazard_img, exposure_img, sensitivity_img, ac_img]).toFloat()
 
     band_names = [
         "lst", "albedo", "uhi",
