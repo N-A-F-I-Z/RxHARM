@@ -34,14 +34,9 @@ from typing import Dict, List, Optional, Tuple
 
 # ─── Age band definitions ────────────────────────────────────────────────────
 CHILD_AGE_BANDS   = [0, 1]            # under-5: 0 = <1yr, 1 = 1–4yr
-ELDERLY_AGE_BANDS = [65, 70, 75, 80]  # 65+
+ELDERLY_AGE_BANDS = [60, 65, 70, 75, 80, 85, 90]  # 60+
 # All bands needed to reconstruct total population by summation
-ALL_AGE_BANDS: List[int] = sorted(set([0, 1] + list(range(5, 85, 5))))
-
-WORLDPOP_BASE_URL = (
-    "https://data.worldpop.org/GIS/AgeSex_structures"
-    "/Global_2015_2030/R2025A"
-)
+ALL_AGE_BANDS: List[int] = sorted(set([0, 1] + list(range(5, 95, 5))))
 
 
 class WorldPopFetcher:
@@ -79,11 +74,17 @@ class WorldPopFetcher:
     def _build_url(self, sex: str, age: int) -> str:
         """
         Construct the direct-download URL for one age-sex band.
-
-        Pattern: /R2025A/{ISO3}/{year}/{ISO3}_{sex}_{age}_{year}_1km.tif
+        Uses 2000-2020 dataset for years < 2015, and 2015-2030 (Global2 R2025A) for years >= 2015.
         """
-        filename = f"{self.iso3}_{sex}_{age}_{self.year}_1km.tif"
-        return f"{WORLDPOP_BASE_URL}/{self.iso3}/{self.year}/{filename}"
+        iso_lower = self.iso3.lower()
+        if self.year < 2015:
+            # 2000-2020 dataset format
+            filename = f"{iso_lower}_{sex}_{age}_{self.year}.tif"
+            return f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2000_2020/{self.year}/{self.iso3}/{filename}"
+        else:
+            # 2015-2030 dataset format (Global2 R2025A)
+            filename = f"{iso_lower}_{sex}_{age:02d}_{self.year}_CN_100m_R2025A_v1.tif"
+            return f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/{self.year}/{self.iso3}/v1/100m/constrained/{filename}"
 
     def _local_path(self, sex: str, age: int) -> Path:
         return self.cache_dir / f"{self.iso3}_{sex}_{age}_{self.year}.tif"
@@ -191,10 +192,13 @@ class WorldPopFetcher:
         needed = {
             "child_0":    ("t", 0),
             "child_1":    ("t", 1),
+            "elderly_60": ("t", 60),
             "elderly_65": ("t", 65),
             "elderly_70": ("t", 70),
             "elderly_75": ("t", 75),
             "elderly_80": ("t", 80),
+            "elderly_85": ("t", 85),
+            "elderly_90": ("t", 90),
         }
 
         for key, (sex, age) in needed.items():

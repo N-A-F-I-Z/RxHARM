@@ -168,8 +168,9 @@ class ExposureFetcher:
         import ee
         from rxharm.config import GEE_COLLECTIONS, GHS_BUILT_EPOCHS, GEE_SCALE, OUTPUT_CRS
 
-        # Find nearest available epoch
-        nearest_epoch = min(GHS_BUILT_EPOCHS, key=lambda e: abs(e - self.year))
+        # Find latest available epoch prior to or equal to self.year
+        valid_epochs = [e for e in GHS_BUILT_EPOCHS if e <= self.year]
+        nearest_epoch = max(valid_epochs) if valid_epochs else min(GHS_BUILT_EPOCHS)
 
         # FIX 0.1.1: Access as individual Image, not ImageCollection
         collection_prefix = GEE_COLLECTIONS["ghs_built_s"]

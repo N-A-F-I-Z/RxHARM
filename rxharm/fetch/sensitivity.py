@@ -105,17 +105,17 @@ class SensitivityFetcher:
         self._worldpop_local = None
         use_gee_fallback = False
 
-        if 2015 <= self.year <= 2030:
+        if 2000 <= self.year <= 2030:
             try:
                 from rxharm.fetch.worldpop_fetcher import WorldPopFetcher, get_iso3_from_centroid
                 # Get centroid coordinates from the GEE geometry
-                centroid = self.geom.centroid().coordinates().getInfo()
+                centroid = self.ee_geometry.centroid().coordinates().getInfo()
                 lon, lat = centroid[0], centroid[1]
                 iso3 = get_iso3_from_centroid(lat, lon)
 
                 if iso3 != "UNKNOWN":
                     # Get AOI bounding box for spatial clip during download
-                    bounds_info = self.geom.bounds().getInfo()["coordinates"][0]
+                    bounds_info = self.ee_geometry.bounds().getInfo()["coordinates"][0]
                     xcoords = [c[0] for c in bounds_info]
                     ycoords = [c[1] for c in bounds_info]
                     aoi_bounds = (min(xcoords), min(ycoords), max(xcoords), max(ycoords))
@@ -180,8 +180,11 @@ class SensitivityFetcher:
         )
         img = col.mosaic()
 
-        elderly_bands = ["M_65", "M_70", "M_75", "M_80", "F_65", "F_70", "F_75", "F_80"]
-        child_bands   = ["M_0", "F_0"]
+        elderly_bands = [
+            "M_60", "M_65", "M_70", "M_75", "M_80",
+            "F_60", "F_65", "F_70", "F_75", "F_80"
+        ]
+        child_bands   = ["M_0", "M_1", "F_0", "F_1"]
 
         elderly_sum  = img.select(elderly_bands).reduce(ee.Reducer.sum())
         child_sum    = img.select(child_bands).reduce(ee.Reducer.sum())
@@ -223,7 +226,6 @@ class SensitivityFetcher:
             ee.ImageCollection(_DW)
             .filterBounds(self.ee_geometry)
             .filterDate(self._start_date, self._end_date)
-            .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", S2_MAX_CLOUD_PCT))
             .select(["built", "crops"])
         )
         _check_collection_size(col, "impervious/cropland")
