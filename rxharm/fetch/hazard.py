@@ -383,15 +383,39 @@ class HazardFetcher:
             # Use the provided mask: invert so 0=built → rural = where mask != 1
             rural_mask = dw_built_mask.neq(1)
 
-        # Rural LST: apply mask, then 5 km focal mean for smooth background
+        # Rural LST: apply mask
         rural_lst = lst_image.updateMask(rural_mask)
-        rural_bg  = rural_lst.reduceNeighborhood(
+        
+        # FIX: Instead of a 5km local focal mean (which creates nodata gaps in the center
+        # of large cities >5km from rural pixels), we compute a single scalar mean
+        # representing the rural baseline temperature for the entire Area of Interest.
+        rural_mean_dict = rural_lst.reduceRegion(
             reducer=ee.Reducer.mean(),
-            kernel=ee.Kernel.circle(radius=5000, units="meters"),
+            geometry=self.ee_geometry,
+            scale=GEE_SCALE,
+            maxPixels=1e10
         )
+        
+        # If the AOI is 100% urban (no rural pixels), fallback to the AOI's overall mean
+        fallback_mean_dict = lst_image.reduceRegion(
+            reducer=ee.Reducer.mean(),
+            geometry=self.ee_geometry,
+            scale=GEE_SCALE,
+            maxPixels=1e10
+        )
+        
+        # Extract the scalar value and handle the fallback
+        rural_mean = rural_mean_dict.get("lst")
+        fallback_mean = fallback_mean_dict.get("lst")
+        final_rural_bg = ee.Algorithms.If(
+            ee.Algorithms.IsEqual(rural_mean, None),
+            ee.Number(fallback_mean),
+            ee.Number(rural_mean)
+        )
+        
         uhi = (
             lst_image
-            .subtract(rural_bg)
+            .subtract(ee.Image.constant(final_rural_bg))
             .clamp(-5, 20)
             .rename("uhi")
             .reproject(crs=OUTPUT_CRS, scale=GEE_SCALE)
