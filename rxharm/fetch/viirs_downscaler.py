@@ -56,6 +56,18 @@ from sklearn.metrics import r2_score, mean_squared_error
 import gstools as gs
 from joblib import Parallel, delayed
 
+def get_cov(model, d):
+    """Fallback utility for extracting covariance from a gstools CovModel across versions."""
+    if hasattr(model, 'covariance'):
+        return model.covariance(d)
+    elif hasattr(model, 'cov'):
+        return model.cov(d)
+    elif hasattr(model, 'cor'):
+        return model.var * model.cor(d)
+    else:
+        # Fallback using variogram: C(h) = var - gamma(h)
+        return model.var - model.vario(d)
+
 warnings.filterwarnings("ignore")
 logging.basicConfig(
     level=logging.INFO,
@@ -370,7 +382,7 @@ def atpk_cpu_loop(xs_v, ys_v, vals_v, xs_f, ys_f,
                 spx_j, spy_j = sub_pixel_centres(
                     xs_v[jj], ys_v[jj], rx, ry, n_sub)
                 d = cdist(np.c_[spx_i, spy_i], np.c_[spx_j, spy_j])
-                C[i, j] = model.cov(d.ravel()).mean()
+                C[i, j] = get_cov(model, d.ravel()).mean()
         bb_cache[key] = C
         return C
 
@@ -382,7 +394,7 @@ def atpk_cpu_loop(xs_v, ys_v, vals_v, xs_f, ys_f,
         for i, ii in enumerate(nbr):
             spx, spy = sub_pixel_centres(xs_v[ii], ys_v[ii], rx, ry, n_sub)
             d = np.hypot(spx - xs_f[j], spy - ys_f[j])
-            c_Ss[i] = model.cov(d).mean()
+            c_Ss[i] = get_cov(model, d).mean()
         m = len(nbr)
         A = np.zeros((m + 1, m + 1))
         A[:m, :m] = C_SS
@@ -424,7 +436,7 @@ def _bb_matrix_vec(nbr_idx, xs_v, ys_v, rx, ry, n_sub, model):
     dx = sub_x[:, np.newaxis, :, np.newaxis] - sub_x[np.newaxis, :, np.newaxis, :]
     dy = sub_y[:, np.newaxis, :, np.newaxis] - sub_y[np.newaxis, :, np.newaxis, :]
     d = np.sqrt(dx ** 2 + dy ** 2)   # (m, m, n2, n2)
-    C = model.cov(d).mean(axis=(2, 3))  # (m, m)
+    C = get_cov(model, d).mean(axis=(2, 3))  # (m, m)
     return C.astype(np.float64)
 
 
@@ -451,7 +463,7 @@ def _solve_chunk(j_start, j_end,
         sub_y = np.array([sub_pixel_centres(xs_v[ii], ys_v[ii], rx, ry, n_sub)[1]
                            for ii in nbr])
         d_Ss = np.sqrt((sub_x - xj) ** 2 + (sub_y - yj) ** 2)  # (m, n2)
-        c_Ss = model.cov(d_Ss).mean(axis=1)                      # (m,)
+        c_Ss = get_cov(model, d_Ss).mean(axis=1)                      # (m,)
 
         m = len(nbr)
         A = np.zeros((m + 1, m + 1), np.float64)

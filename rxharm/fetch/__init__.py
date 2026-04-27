@@ -212,7 +212,7 @@ def fetch_all_indicators(
                     "     The GeoTIFF bands 6–7 (elderly_frac, child_frac) will be\n"
                     "     PLACEHOLDER values (-1). After the export completes, call:\n"
                     "     data = load_existing_export(tiff_path)\n"
-                    "     data = merge_worldpop_local(data, sensitivity_fetcher)\n"
+                    "     data = merge_worldpop_local(data)\n"
                     "     before running HVIEngine."
                 )
 
@@ -371,41 +371,23 @@ def load_existing_export(
     }
 
 
-def merge_worldpop_local(data: dict, sensitivity_fetcher: object) -> dict:
+def merge_worldpop_local(data: dict) -> dict:
     """
-    FIX 0.1.1: Merge WorldPop Global2 locally-downloaded arrays into a
-    load_existing_export() result dict, replacing the GEE placeholder
-    bands (-1 values) with the real age-fraction data.
+    Merge WorldPop Global2 locally-downloaded arrays into a load_existing_export() result dict,
+    replacing the GEE placeholder bands (-1 values) with the real age-fraction data.
 
-    Call this AFTER load_existing_export() when WorldPop was downloaded locally:
+    This function reads from 'worldpop_total.tif', 'worldpop_elderly_frac.tif', 
+    and 'worldpop_child_frac.tif' saved in the current directory by the parallel download task.
+
+    Call this AFTER load_existing_export():
 
         data = load_existing_export('/content/drive/MyDrive/RxHARM_outputs/*.tif')
-        data = merge_worldpop_local(data, sensitivity_fetcher)
-
-    Parameters
-    ----------
-    data : dict
-        Output of load_existing_export().
-    sensitivity_fetcher : SensitivityFetcher
-        The fetcher instance from fetch_all_indicators()['sensitivity_fetcher'].
-        Must have a _worldpop_local attribute (not None).
-
-    Returns
-    -------
-    dict
-        Updated data dict with 'elderly_frac', 'child_frac', 'population'
-        replaced by the locally downloaded WorldPop Global2 arrays.
+        data = merge_worldpop_local(data)
     """
     import numpy as np
-
-    wp = getattr(sensitivity_fetcher, "_worldpop_local", None)
-    if wp is None:
-        # No local WorldPop data — return unchanged
-        return data
+    import os
 
     arrays = dict(data["arrays"])  # shallow copy
-
-    # Resize WorldPop arrays to match the GeoTIFF shape if needed
     target_shape = list(arrays.values())[0].shape
 
     def _resize_to(arr: np.ndarray, shape: tuple) -> np.ndarray:
@@ -416,12 +398,40 @@ def merge_worldpop_local(data: dict, sensitivity_fetcher: object) -> dict:
         img_r = img.resize((shape[1], shape[0]), _PIL.BILINEAR)
         return np.array(img_r).astype(float)
 
-    if wp.get("population") is not None:
-        arrays["population"]   = _resize_to(wp["population"],   target_shape)
-    if wp.get("elderly_frac") is not None:
-        arrays["elderly_frac"] = _resize_to(wp["elderly_frac"], target_shape)
-    if wp.get("child_frac") is not None:
-        arrays["child_frac"]   = _resize_to(wp["child_frac"],   target_shape)
+    def _load_tif(path: str) -> np.ndarray:
+        if not os.path.exists(path):
+            return None
+        try:
+            import rasterio
+            with rasterio.open(path) as src:
+                return src.read(1)
+        except Exception as e:
+            print(f"    Failed to read {path}: {e}")
+            return None
 
-    print(f"  WorldPop merged: source = {wp.get('source', 'local')}")
+    merged = False
+    
+    # Check for total population
+    pop_arr = _load_tif('worldpop_total.tif')
+    if pop_arr is not None:
+        arrays["population"] = _resize_to(pop_arr, target_shape)
+        merged = True
+
+    # Check for elderly fraction
+    elderly_arr = _load_tif('worldpop_elderly_frac.tif')
+    if elderly_arr is not None:
+        arrays["elderly_frac"] = _resize_to(elderly_arr, target_shape)
+        merged = True
+
+    # Check for child fraction
+    child_arr = _load_tif('worldpop_child_frac.tif')
+    if child_arr is not None:
+        arrays["child_frac"] = _resize_to(child_arr, target_shape)
+        merged = True
+
+    if merged:
+        print("  ✅ WorldPop merged: local GeoTIFFs injected into data dictionary.")
+    else:
+        print("  ⚠ No local WorldPop GeoTIFFs found. Make sure the parallel fetcher ran successfully.")
+
     return {**data, "arrays": arrays}
