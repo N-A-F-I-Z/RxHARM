@@ -396,7 +396,7 @@ GEE_COLLECTIONS: dict = {
     # Potapov canopy height (GLAD / GEDI)
     "potapov_ch":        "projects/sat-io/open-datasets/GLAD/GEDI_V27",
     # VIIRS Day/Night Band (annual composite)
-    "viirs_dnb":         "NOAA/VIIRS/DNB/ANNUAL_V21",
+    "viirs_dnb":         "NOAA/VIIRS/DNB/ANNUAL_V22",
     # ERA5-Land monthly reanalysis
     "era5_land":         "ECMWF/ERA5_LAND/MONTHLY_AGGR",
 }

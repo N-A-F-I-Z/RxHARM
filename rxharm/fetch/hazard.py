@@ -182,6 +182,7 @@ class HazardFetcher:
     def _scale_landsat_sr(image: object) -> object:
         """
         Apply Collection 2 Level-2 scale factors to convert DN to physical units.
+        Handles scenes that may be missing ST_B10 (thermal band).
         """
         import ee
         sr_bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "SR_B7"]
@@ -190,14 +191,19 @@ class HazardFetcher:
             .multiply(LANDSAT_SR_SCALE)
             .add(LANDSAT_SR_OFFSET)
         )
-        lst_celsius = (
+        # Some C2 L2 scenes lack ST_B10 (thermal processing failed).
+        # Use ee.Algorithms.If to handle gracefully.
+        has_thermal = image.bandNames().contains("ST_B10")
+        lst_celsius = ee.Algorithms.If(
+            has_thermal,
             image.select("ST_B10")
-            .multiply(0.00341802)
-            .add(149.0)
-            .subtract(273.15)
-            .rename("LST_C")
+                .multiply(0.00341802)
+                .add(149.0)
+                .subtract(273.15)
+                .rename("LST_C"),
+            ee.Image.constant(0).rename("LST_C").updateMask(ee.Image(0))  # masked placeholder
         )
-        return optical.addBands(lst_celsius)
+        return optical.addBands(ee.Image(lst_celsius))
 
     # ── Indicator methods ─────────────────────────────────────────────────────
 
@@ -205,6 +211,7 @@ class HazardFetcher:
         """
         Build a merged, cloud-masked, scaled Landsat 8+9 collection.
         Filters to images with less than 15% cloud cover for better accuracy.
+        Excludes scenes that lack the ST_B10 thermal band.
         """
         import ee
 
@@ -213,7 +220,8 @@ class HazardFetcher:
                 ee.ImageCollection(col_id)
                 .filterBounds(self.ee_geometry)
                 .filterDate(self._start_date, self._end_date)
-                .filter(ee.Filter.lt("CLOUD_COVER", 15))  # strict cloud threshold
+                .filter(ee.Filter.lt("CLOUD_COVER", 15))
+                .filter(ee.Filter.listContains("system:band_names", "ST_B10"))
                 .map(self._mask_landsat_clouds)
                 .map(self._scale_landsat_sr)
             )
@@ -250,12 +258,13 @@ class HazardFetcher:
                 cloud_only = qa.bitwiseAnd(1 << 3).eq(0)   # bit 3 = cloud
                 return img.updateMask(cloud_only)
 
-            # Rebuild collection with relaxed mask
+            # Rebuild collection with relaxed mask (but still require thermal band)
             def process_relaxed(col_id: str) -> object:
                 return (ee.ImageCollection(col_id)
                         .filterBounds(self.ee_geometry)
                         .filterDate(self._start_date, self._end_date)
-                        .filter(ee.Filter.lt("CLOUD_COVER", 15))
+                        .filter(ee.Filter.lt("CLOUD_COVER", 30))
+                        .filter(ee.Filter.listContains("system:band_names", "ST_B10"))
                         .map(mask_clouds_relaxed)
                         .map(self._scale_landsat_sr))
 

@@ -315,10 +315,16 @@ def fit_variogram(residuals, profile):
     dmax = cdist(pts[:n_samp], pts[:n_samp]).max() * 0.6
     bin_edges = np.linspace(0, dmax, 20)
 
-    bin_c, gamma, counts = gs.vario_estimate(
+    vario_result = gs.vario_estimate(
         pos=(xs, ys), field=vals, bin_edges=bin_edges, sampling_size=MAX
     )
-    ok = counts > 0
+    # gstools >= 1.4 returns (bin_c, gamma, counts); older returns (bin_c, gamma)
+    if len(vario_result) == 3:
+        bin_c, gamma, counts = vario_result
+        ok = counts > 0
+    else:
+        bin_c, gamma = vario_result
+        ok = np.ones(len(bin_c), dtype=bool)  # assume all bins valid
     model_cls = getattr(gs, CFG["atpk_model"])
     model = model_cls(dim=2)
     try:
@@ -836,51 +842,114 @@ if __name__ == "__main__":
 
 class VIIRSDownscaler:
     """
-    Wrapper class for integrating the standalone VIIRS downscaler into the RxHARM notebook workflow.
+    Wrapper class for integrating the standalone VIIRS downscaler
+    into the RxHARM notebook workflow.
+
+    Accepts file paths for covariates (not raw arrays) so that each
+    raster's native CRS and transform are preserved during reprojection.
+
+    Usage (notebook)::
+
+        downscaler = VIIRSDownscaler(backend='gpu')
+        ntl_100m, fine_profile = downscaler.downscale(
+            viirs_path='viirs_raw.tif',
+            pop_path='worldpop_total.tif',
+        )
     """
+
     def __init__(self, backend="cpu-vec", zoom=4.5):
         self.backend = backend
         self.zoom = zoom
         CFG["zoom_factor"] = zoom
-        
-    def downscale(self, viirs_coarse_arr, coarse_profile, pop_fine_arr=None, lst_fine_arr=None, ghs_fine_arr=None):
+
+    def downscale(
+        self,
+        viirs_path: str = None,
+        viirs_coarse_arr=None,
+        coarse_profile=None,
+        pop_path: str = None,
+        lst_path: str = None,
+        ghs_path: str = None,
+        pop_fine_arr=None,
+        lst_fine_arr=None,
+        ghs_fine_arr=None,
+    ):
         """
-        Downscale a coarse VIIRS array in memory.
-        Returns the fine resolution downscaled array and the fine profile.
+        Downscale VIIRS NTL from ~450 m to ~100 m.
+
+        Accepts EITHER file paths (preferred) OR raw numpy arrays.
+        When arrays are passed, they must already match the fine grid.
+
+        Returns
+        -------
+        ntl_fine : np.ndarray
+            Downscaled NTL at ~100 m.
+        fine_profile : dict
+            Rasterio profile for the output grid.
         """
         log.info("== Memory-based VIIRS Downscaling ==")
+
+        # ── Load VIIRS coarse raster ──────────────────────────────────────
+        if viirs_path is not None:
+            viirs_coarse_arr, coarse_profile = load_raster(viirs_path)
+        if viirs_coarse_arr is None or coarse_profile is None:
+            raise ValueError("Provide either viirs_path or (viirs_coarse_arr + coarse_profile).")
+
         fp = build_fine_profile(coarse_profile)
-        
+        cp = coarse_profile
+
+        # ── Load and reproject covariates ──────────────────────────────────
         fine_covs, coarse_covs, names = [], [], []
-        
-        def add(arr_fine, name):
-            arr_coarse = agg_to_coarse(arr_fine, fp, coarse_profile)
+
+        def _add(arr_fine, name):
+            arr_fine = np.where(np.isnan(arr_fine), 0, arr_fine)
+            arr_coarse = agg_to_coarse(arr_fine, fp, cp)
             fine_covs.append(arr_fine)
             coarse_covs.append(arr_coarse)
             names.append(name)
             log.info(f"  {name}: fine{arr_fine.shape}  coarse{arr_coarse.shape}")
-            
-        if pop_fine_arr is not None:
-            # Re-project to ensure it matches the fine profile strictly
-            pop_fine_arr = reproject_to(pop_fine_arr, fp, fp, resampling=Resampling.average)
-            add(pop_fine_arr, "population")
-            
-        if lst_fine_arr is not None:
-            lst_fine_arr = reproject_to(lst_fine_arr, fp, fp, resampling=Resampling.average)
-            add(lst_fine_arr, "LST")
-            
-        if ghs_fine_arr is not None:
-            ghs_fine_arr = reproject_to(ghs_fine_arr, fp, fp, resampling=Resampling.average)
-            add(ghs_fine_arr, "GHS")
-            
+
+        # Population
+        if pop_path is not None:
+            arr, prof = load_raster(pop_path)
+            arr_fine = reproject_to(arr, prof, fp)
+            arr_fine = np.where(np.isnan(arr_fine), 0, arr_fine)
+            _add(arr_fine, "population")
+        elif pop_fine_arr is not None:
+            # Assume caller already aligned to fine grid
+            _add(pop_fine_arr.astype(np.float32), "population")
+
+        # LST
+        if lst_path is not None:
+            arr, prof = load_raster(lst_path)
+            arr_fine = reproject_to(arr, prof, fp)
+            arr_fine = np.where(np.isnan(arr_fine), np.nanmean(arr_fine), arr_fine)
+            _add(arr_fine, "LST")
+        elif lst_fine_arr is not None:
+            _add(lst_fine_arr.astype(np.float32), "LST")
+
+        # GHS
+        if ghs_path is not None:
+            arr, prof = load_raster(ghs_path)
+            arr_fine = reproject_to(arr, prof, fp)
+            arr_fine = np.where(np.isnan(arr_fine), 0, arr_fine)
+            _add(arr_fine, "GHS")
+        elif ghs_fine_arr is not None:
+            _add(ghs_fine_arr.astype(np.float32), "GHS")
+
         if not fine_covs:
-            raise ValueError("At least one covariate (pop, lst, or ghs) must be provided for downscaling.")
-            
+            # No covariates — use a flat constant proxy
+            log.warning("  No covariates provided; using flat proxy (quality will be poor).")
+            _add(np.ones((fp["height"], fp["width"]), np.float32), "flat_proxy")
+
+        log.info(f"  Active covariates: {names}")
+
+        # ── RF + ATPK pipeline ────────────────────────────────────────────
         trend_fine, resid_coarse = rf_step(viirs_coarse_arr, coarse_covs, fine_covs)
-        resid_fine = atpk_step(resid_coarse, coarse_profile, fp, backend=self.backend)
-        
+        resid_fine = atpk_step(resid_coarse, cp, fp, backend=self.backend)
+
         ntl_fine = np.clip(trend_fine + resid_fine, 0, None)
-        ntl_fine = enforce_coherence(ntl_fine, viirs_coarse_arr, fp, coarse_profile)
-        
+        ntl_fine = enforce_coherence(ntl_fine, viirs_coarse_arr, fp, cp)
+
         return ntl_fine, fp
 
