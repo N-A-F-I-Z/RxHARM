@@ -140,55 +140,37 @@ class HazardFetcher:
     def _month_to_date_range(year: int, months: List[int]) -> Tuple[str, str]:
         """
         Convert a year and list of month integers to a GEE date range string pair.
-
-        The range spans from day 1 of the first month to day 1 of the month
-        immediately after the last month. Handles year-end wrap (e.g. [11, 12]
-        produces an end date of Jan 1 of year+1).
-
-        Parameters
-        ----------
-        year : int
-            Calendar year.
-        months : list of int
-            Sorted or unsorted list of month integers (1–12).
-
-        Returns
-        -------
-        tuple of str
-            ``(start_date, end_date)`` in ``'YYYY-MM-DD'`` format.
+        Expands the search window by +/- 1 month to increase clear-sky scene availability.
         """
-        first = min(months)
-        last  = max(months)
-        start = f"{year}-{first:02d}-01"
+        first = min(months) - 1
+        last  = max(months) + 1
+        
+        # Handle year wrapping for the expanded window
+        start_year = year
+        if first < 1:
+            first = 12
+            start_year -= 1
+            
+        end_year = year
+        if last > 12:
+            last -= 12
+            end_year += 1
+            
+        start = f"{start_year}-{first:02d}-01"
+        
         if last == 12:
-            end = f"{year + 1}-01-01"
+            end = f"{end_year + 1}-01-01"
         else:
-            end = f"{year}-{last + 1:02d}-01"
+            end = f"{end_year}-{last + 1:02d}-01"
         return start, end
 
     @staticmethod
     def _mask_landsat_clouds(image: object) -> object:
         """
         Apply a cloud and cloud-shadow mask using the QA_PIXEL band.
-
-        Bits checked (Landsat Collection 2 Level-2 QA_PIXEL specification):
-            Bit 1 = dilated cloud
-            Bit 3 = cloud
-            Bit 4 = cloud shadow
-
-        Parameters
-        ----------
-        image : ee.Image
-            Raw Landsat C2 L2 image.
-
-        Returns
-        -------
-        ee.Image
-            Image with cloud and shadow pixels masked to 0.
         """
         import ee
         qa = image.select("QA_PIXEL")
-        # REASON: Using bitwise AND isolates each QA bit independently.
         cloud_mask = (
             qa.bitwiseAnd(1 << 1).eq(0)   # dilated cloud
             .And(qa.bitwiseAnd(1 << 3).eq(0))  # cloud
@@ -200,31 +182,14 @@ class HazardFetcher:
     def _scale_landsat_sr(image: object) -> object:
         """
         Apply Collection 2 Level-2 scale factors to convert DN to physical units.
-
-        Surface reflectance (SR) bands: multiply by LANDSAT_SR_SCALE, add LANDSAT_SR_OFFSET.
-        Land Surface Temperature (ST_B10): apply thermal scale → Celsius.
-
-        Parameters
-        ----------
-        image : ee.Image
-            Cloud-masked Landsat C2 L2 image.
-
-        Returns
-        -------
-        ee.Image
-            Image with scaled reflectance bands and LST in Celsius.
         """
         import ee
-        # Scale surface reflectance bands
         sr_bands = ["SR_B2", "SR_B4", "SR_B5", "SR_B6", "SR_B7"]
         optical = (
             image.select(sr_bands)
             .multiply(LANDSAT_SR_SCALE)
             .add(LANDSAT_SR_OFFSET)
         )
-        # Scale thermal band to Celsius
-        # REASON: C2 L2 thermal scale factor = 0.00341802, offset = 149.0 K;
-        # subtract 273.15 to convert Kelvin → Celsius.
         lst_celsius = (
             image.select("ST_B10")
             .multiply(0.00341802)
@@ -239,12 +204,7 @@ class HazardFetcher:
     def _build_landsat_collection(self) -> object:
         """
         Build a merged, cloud-masked, scaled Landsat 8+9 collection.
-
-        Returns
-        -------
-        ee.ImageCollection
-            Merged LC08 + LC09 collection filtered to AOI and date window,
-            with cloud mask and scale factors applied.
+        Filters to images with less than 15% cloud cover for better accuracy.
         """
         import ee
 
@@ -253,6 +213,7 @@ class HazardFetcher:
                 ee.ImageCollection(col_id)
                 .filterBounds(self.ee_geometry)
                 .filterDate(self._start_date, self._end_date)
+                .filter(ee.Filter.lt("CLOUD_COVER", 15))  # strict cloud threshold
                 .map(self._mask_landsat_clouds)
                 .map(self._scale_landsat_sr)
             )
