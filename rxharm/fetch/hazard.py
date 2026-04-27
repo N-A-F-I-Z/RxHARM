@@ -255,9 +255,9 @@ class HazardFetcher:
                 return (ee.ImageCollection(col_id)
                         .filterBounds(self.ee_geometry)
                         .filterDate(self._start_date, self._end_date)
+                        .filter(ee.Filter.lt("CLOUD_COVER", 15))
                         .map(mask_clouds_relaxed)
-                        .map(self._scale_landsat_sr)
-                        .map(self._compute_lst_band))
+                        .map(self._scale_landsat_sr))
 
             collection = process_relaxed(_lc08_id()).merge(process_relaxed(_lc09_id()))
 
