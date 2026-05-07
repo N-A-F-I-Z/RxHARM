@@ -265,6 +265,7 @@ class HRIEngine:
     def compute_all(
         self,
         hvi_results: dict,
+        raw_arrays: Optional[Dict[str, np.ndarray]] = None,
         event_days: int = 3,
     ) -> dict:
         """
@@ -274,6 +275,9 @@ class HRIEngine:
         ----------
         hvi_results : dict
             Output of ``HVIEngine.compute_all()``.
+        raw_arrays : dict, optional
+            Raw physical-unit arrays (e.g. from data['arrays']).
+            If provided, uses raw population count for AD calculation.
         event_days : int
             Heatwave duration for AD calculation.
 
@@ -286,13 +290,16 @@ class HRIEngine:
         H_s = hvi_results["H_s"]
         hvi = hvi_results["HVI"]
 
-        # Extract population and LST from normalised arrays
-        ind_norm = hvi_results.get("indicator_normalized", {})
-        population = ind_norm.get(
-            "population",
-            np.ones_like(H_s),
-        )
-        lst = ind_norm.get("lst", H_s)  # fallback to H_s if LST unavailable
+        # Extract population and LST from normalized/raw arrays
+        # REASON: AD must use raw population count, not normalized [0,1].
+        if raw_arrays and "population" in raw_arrays:
+            population = raw_arrays["population"]
+        else:
+            population = hvi_results.get("indicator_normalized", {}).get("population", np.ones_like(H_s))
+            if raw_arrays is None:
+                print("  WARNING: raw_arrays not provided to HRIEngine. AD results may be invalid.")
+
+        lst = hvi_results.get("indicator_normalized", {}).get("lst", H_s)
 
         hri = self.compute_hri(H_s, hvi)
         af  = self.compute_attributable_fraction(lst, hvi)

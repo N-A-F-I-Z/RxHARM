@@ -106,6 +106,15 @@ class AOIHandler:
 
         self._resolve_source()
         self._compute_metadata()
+        self._detect_iso3()
+
+    def _detect_iso3(self) -> None:
+        """
+        Detect the ISO3 country code for the AOI centroid.
+        """
+        from rxharm.fetch.worldpop_fetcher import get_iso3_from_centroid
+        self.iso3 = get_iso3_from_centroid(self.centroid_ll[0], self.centroid_ll[1])
+        print(f"  Detected ISO3: {self.iso3}")
 
     # ── Source resolution ─────────────────────────────────────────────────────
 

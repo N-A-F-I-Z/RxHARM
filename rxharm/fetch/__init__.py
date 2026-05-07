@@ -371,7 +371,7 @@ def load_existing_export(
     }
 
 
-def merge_worldpop_local(data: dict) -> dict:
+def merge_worldpop_local(data: dict, mask_geometry: Optional[object] = None) -> dict:
     """
     Merge WorldPop Global2 locally-downloaded arrays into a load_existing_export() result dict,
     replacing the GEE placeholder bands (-1 values) with the real age-fraction data.
@@ -382,7 +382,14 @@ def merge_worldpop_local(data: dict) -> dict:
     Call this AFTER load_existing_export():
 
         data = load_existing_export('/content/drive/MyDrive/RxHARM_outputs/*.tif')
-        data = merge_worldpop_local(data)
+        data = merge_worldpop_local(data, mask_geometry=aoi.gdf.geometry.iloc[0])
+
+    Parameters
+    ----------
+    data : dict
+        Output from load_existing_export().
+    mask_geometry : shapely.geometry, optional
+        Geometry to clip the WorldPop data to.
     """
     import numpy as np
     import os
@@ -409,28 +416,55 @@ def merge_worldpop_local(data: dict) -> dict:
             print(f"    Failed to read {path}: {e}")
             return None
 
+    def _apply_mask(arr: np.ndarray, geom: object, transform: object) -> np.ndarray:
+        if geom is None:
+            return arr
+        from rasterio import features
+        mask_arr = features.rasterize(
+            [geom],
+            out_shape=arr.shape,
+            transform=transform,
+            fill=0,
+            default_value=1,
+            all_touched=True
+        )
+        # Apply mask: set outside to NaN
+        return np.where(mask_arr == 1, arr, np.nan)
+
     merged = False
     
+    # We need the transform from the original data to apply mask correctly
+    transform = data.get("transform")
+
     # Check for total population
     pop_arr = _load_tif('worldpop_total.tif')
     if pop_arr is not None:
-        arrays["population"] = _resize_to(pop_arr, target_shape)
+        resized = _resize_to(pop_arr, target_shape)
+        if mask_geometry:
+            resized = _apply_mask(resized, mask_geometry, transform)
+        arrays["population"] = resized
         merged = True
 
     # Check for elderly fraction
     elderly_arr = _load_tif('worldpop_elderly_frac.tif')
     if elderly_arr is not None:
-        arrays["elderly_frac"] = _resize_to(elderly_arr, target_shape)
+        resized = _resize_to(elderly_arr, target_shape)
+        if mask_geometry:
+            resized = _apply_mask(resized, mask_geometry, transform)
+        arrays["elderly_frac"] = resized
         merged = True
 
     # Check for child fraction
     child_arr = _load_tif('worldpop_child_frac.tif')
     if child_arr is not None:
-        arrays["child_frac"] = _resize_to(child_arr, target_shape)
+        resized = _resize_to(child_arr, target_shape)
+        if mask_geometry:
+            resized = _apply_mask(resized, mask_geometry, transform)
+        arrays["child_frac"] = resized
         merged = True
 
     if merged:
-        print("  ✅ WorldPop merged: local GeoTIFFs injected into data dictionary.")
+        print("  ✅ WorldPop merged and clipped: local GeoTIFFs injected into data dictionary.")
     else:
         print("  ⚠ No local WorldPop GeoTIFFs found. Make sure the parallel fetcher ran successfully.")
 
